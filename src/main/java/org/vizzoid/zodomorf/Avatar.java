@@ -23,7 +23,7 @@ public class Avatar {
             this.warmingUp = newTemperature > temperature
         }
         if (isTooCold() && !isWarmingUp()) {
-            this.health -= 1;
+            this.health -= ticks;
         }
     }
   
