@@ -22,8 +22,7 @@ public class Tile {
     }
     
     public double transitionTemperature(double temperature, long ticks) {
-        double change = temperature > this.temperature ? -0.1 : 0.1;
-        return temperature + change;
+        return planet.transitionTemperature(this.temperature, temperature, ticks);
     }
     
     public void tick(long ticks) {
