@@ -14,6 +14,11 @@ public class Tile implements TilePainter {
         this.planet = planet;
     }
 
+    public Tile(Planet planet, Material material) {
+        this(planet);
+        setMaterial(material);
+    }
+
     public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
@@ -36,6 +41,7 @@ public class Tile implements TilePainter {
 
     public void setMaterial(Material material) {
         this.material = material;
+        if (material.isSolid()) setBackground(material);
     }
 
     public double transitionTemperature(double temperature, long ticks) {

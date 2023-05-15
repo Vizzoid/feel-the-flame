@@ -34,6 +34,7 @@ public class PlanetEngine {
         setPainter(newMazePainter());
         Avatar player = planet.getAvatar();
         engine.addKeyListener(new KeyListener() {
+
             @Override
             public void keyTyped(KeyEvent e) {
 
@@ -42,8 +43,21 @@ public class PlanetEngine {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A -> player.getVelocity().moveX(-0.25);
-                    case KeyEvent.VK_D -> player.getVelocity().moveX(0.25);
+                    case KeyEvent.VK_A -> {
+                        if (!player.isMovingLeft()) {
+                            player.setMovingLeft(true);
+                        }
+                    }
+                    case KeyEvent.VK_D -> {
+                        if (!player.isMovingRight()) {
+                            player.setMovingRight(true);
+                        }
+                    }
+                    case KeyEvent.VK_SPACE -> {
+                        if(!player.isJumping()) {
+                            player.setJumping(true);
+                        }
+                    }
                 }
             }
 
@@ -51,7 +65,17 @@ public class PlanetEngine {
             public void keyReleased(KeyEvent e) {
                 MoveablePoint velocity = player.getVelocity();
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A, KeyEvent.VK_D -> velocity.setX(0);
+                    case KeyEvent.VK_A -> {
+                        velocity.setX(0);
+                        player.setMovingLeft(false);
+                    }
+                    case KeyEvent.VK_D -> {
+                        velocity.setX(0);
+                        player.setMovingRight(false);
+                    }
+                    case KeyEvent.VK_SPACE -> {
+                        player.setJumping(false);
+                    }
                 }
             }
         });

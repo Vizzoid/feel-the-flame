@@ -114,7 +114,6 @@ public class Latice<T> implements Iterable<T> {
             return cursor != size;
         }
 
-        @SuppressWarnings("unchecked")
         public T next() {
             int i = cursor;
             if (i >= size)
