@@ -7,7 +7,7 @@ public class Avatar implements LaticeCamera {
 
     public static final double HEALTH_PER_STARVE = 0.016666666666666666;
     public static final int MAX_VELOCITY = 5;
-    private static final double GRAVITY = -0.01;
+    private static final double GRAVITY = -0.05;
 
     private Planet planet;
     private double health = 100;
@@ -15,6 +15,8 @@ public class Avatar implements LaticeCamera {
     private double temperature = 100;
     private boolean warmingUp = false;
     private final DynamicRectangle hitbox = new DynamicRectangle(new ImmoveablePoint(500, 500), 1, 2, new MoveablePoint());
+    private boolean jumping;
+    private boolean movingLeft, movingRight;
 
     public Avatar() {
 
@@ -79,7 +81,6 @@ public class Avatar implements LaticeCamera {
     public void tick(long ticks) {
         Latice<Tile> latice = planet.getTileLatice();
         MoveablePoint velocity = getVelocity();
-        System.out.println(velocity);
         velocity.moveY(GRAVITY);
 
         // we don't want velocity too fast that it cannot collide with tiles or lag the game
@@ -96,15 +97,13 @@ public class Avatar implements LaticeCamera {
         if (velocity.getY() < -MAX_VELOCITY) {
             velocity.setY(-MAX_VELOCITY);
         }
-
-
+        if (velocity.getX() == 0) {
+            if (!(movingLeft && movingRight)) {
+                if (movingLeft) velocity.setX(-0.5);
+                if (movingRight) velocity.setX(0.5);
+            }
+        }
         {
-            // we are splitting the collisions into above feet and below feet so that we don't add gravity velocity if there is a collision below the feet
-            // (player is on ground)
-
-            // potential bugs:
-            // if a player falls and hits the side of a tile but not the top of it no gravity will be added despite still falling
-
             int tileX = getTileX();
             int tileY = getTileY();
             int startX = tileX - MAX_VELOCITY;
@@ -119,6 +118,10 @@ public class Avatar implements LaticeCamera {
                     hitbox.resolve(new Rectangle(new ImmoveablePoint(x, y), 1, 1));
                 }
             }
+        }
+        // potential bugs: if jumping into block may faze through as collision is not tested (Will not work before collision with current system because gravity is removed with collision
+        if (jumping && velocity.getY() == 0) {
+            velocity.setY(0.5);
         }
         {
             MoveablePoint effectiveVelocity = velocity.multiply(ticks);
@@ -158,5 +161,29 @@ public class Avatar implements LaticeCamera {
 
     public double getCenterY() {
         return getY();
+    }
+
+    public boolean isMovingLeft() {
+        return movingLeft;
+    }
+
+    public boolean isMovingRight() {
+        return movingRight;
+    }
+
+    public boolean isJumping() {
+        return jumping;
+    }
+
+    public void setMovingLeft(boolean movingLeft) {
+        this.movingLeft = movingLeft;
+    }
+
+    public void setMovingRight(boolean movingRight) {
+        this.movingRight = movingRight;
+    }
+
+    public void setJumping(boolean b) {
+        this.jumping = b;
     }
 }
