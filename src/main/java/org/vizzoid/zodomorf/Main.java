@@ -8,7 +8,7 @@ public class Main {
         Planet planet = new Planet(new Avatar());
         PlanetEngine.start(planet);
 
-        new NormalPlanetGenerator().generate(planet);
+        new NormalPlanetGenerator(Material.LAVA).generate(planet);
 
         /*DefaultEngine engine = new DefaultEngine() {
             protected void clearScreen(Graphics g) {
