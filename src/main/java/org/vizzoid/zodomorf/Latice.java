@@ -2,12 +2,15 @@ package org.vizzoid.zodomorf;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("unchecked")
-public class Latice<T> implements Iterable<T> {
+public class Latice<T> implements Iterable<T>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final int width;
     private final int height;

@@ -1,9 +1,13 @@
 package org.vizzoid.utils.position;
 
+import java.io.Serializable;
+
 /**
  * Position in 2d plane that cannot be relocated
  */
-public class ImmoveablePoint implements Point {
+public class ImmoveablePoint implements Point, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private double x, y;
 

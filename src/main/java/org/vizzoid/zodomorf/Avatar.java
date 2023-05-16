@@ -1,28 +1,53 @@
 package org.vizzoid.zodomorf;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.vizzoid.utils.position.DynamicRectangle;
 import org.vizzoid.utils.position.ImmoveablePoint;
 import org.vizzoid.utils.position.MoveablePoint;
 import org.vizzoid.utils.position.Rectangle;
 import org.vizzoid.zodomorf.engine.LaticeCamera;
 
-public class Avatar implements LaticeCamera {
+public class Avatar implements LaticeCamera, Serializable {
 
+    private static final long serialVersionUID = 1L;
     public static final double HEALTH_PER_STARVE = 0.016666666666666666;
     public static final int MAX_VELOCITY = 5;
     private static final double GRAVITY = -0.05;
 
-    private Planet planet;
+    private transient Planet planet;
     private double health = 100;
     private double food = 30000;
     private double temperature = 100;
-    private boolean warmingUp = false;
-    private final DynamicRectangle hitbox = new DynamicRectangle(new MoveablePoint(), 0.9, 1.9, new MoveablePoint());
-    private boolean jumping;
-    private boolean movingLeft, movingRight;
-    private int miningTileHealth;
-    private Tile mouseTile = Tile.EMPTY;
-    private boolean clicking = false;
+    private transient boolean warmingUp = false;
+    private transient final DynamicRectangle hitbox = new DynamicRectangle(new MoveablePoint(), 0.9, 1.9, new MoveablePoint());
+    private transient boolean jumping;
+    private transient boolean movingLeft, movingRight;
+    private transient int miningTileHealth;
+    private transient Tile mouseTile = Tile.EMPTY;
+    private transient boolean clicking = false;
+    private final Map<String, Integer> storage = new HashMap<>();
+
+    private void writeObject(ObjectOutputStream oos) 
+      throws IOException {
+        oos.defaultWriteObject();
+        oos.writeObject(hitbox.getPos());
+        oos.writeObject(hitbox.getVelocity());
+    }
+
+    private void readObject(ObjectInputStream ois) 
+      throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+        MoveablePoint pos = (MoveablePoint) ois.readObject();
+        MoveablePoint velocity = (MoveablePoint) ois.readObject();
+        hitbox.getPos().set(pos);
+        hitbox.getVelocity().set(velocity);
+    }
 
     public Avatar() {
 
@@ -150,6 +175,10 @@ public class Avatar implements LaticeCamera {
 
         if (clicking) {
             if (--miningTileHealth < 0) {
+                String material = mouseTile.getMaterial().getKey();
+                int count = storage.computeIfAbsent(material, m -> 0);
+                storage.put(material, count + 1);
+                
                 mouseTile.setMaterial(Material.EMPTY);
                 mouseTile = Tile.EMPTY;
                 miningTileHealth = 5;

@@ -42,6 +42,10 @@ public class Material implements TilePainter {
         return new MaterialBuilder().key(key);
     }
 
+    public static PresetMap<Material> map() {
+        return materials;
+    }
+
     public static Collection<? extends Material> values() {
         return materials.values();
     }

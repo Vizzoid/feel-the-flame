@@ -1,9 +1,13 @@
 package org.vizzoid.utils.position;
 
+import java.io.Serializable;
+
 /**
  * 2D position that can change without creating new position object with helper functions
  */
-public class MoveablePoint implements Point {
+public class MoveablePoint implements Point, Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     private double x, y;
 

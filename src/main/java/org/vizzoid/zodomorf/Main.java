@@ -17,7 +17,9 @@ public class Main {
         boolean visual = false;
 
         if (!visual) {
-            Planet planet = new Planet(new Avatar());
+            Game game = new Game();
+            Planet planet = new Planet(game.getAvatar());
+            game.getPlanets().add(planet);
             PlanetEngine.start(planet);
 
             new NormalPlanetGenerator(new PlanetTileSet()).generate(planet);

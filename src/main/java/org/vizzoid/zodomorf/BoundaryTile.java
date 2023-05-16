@@ -3,6 +3,9 @@ package org.vizzoid.zodomorf;
 import org.vizzoid.zodomorf.engine.TileInfo;
 
 public class BoundaryTile extends Tile {
+
+    private static final long serialVersionUID = 1L;
+
     public BoundaryTile(Planet planet, int x, int y) {
         super(planet, x, y);
         material = Material.DIRT;

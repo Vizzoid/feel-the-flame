@@ -1,15 +1,18 @@
 package org.vizzoid.zodomorf;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Planet {
+public class Planet implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int time;
     private int day;
-    private double temperature = buildSkyTemperature();
+    private transient double temperature = buildSkyTemperature();
     private final Latice<Tile> latice = new Latice<>(500, 250);
-    private final Avatar avatar;
-    private final Random random = new Random();
+    private transient final Avatar avatar;
+    private transient final Random random = new Random();
 
     public Planet(Avatar avatar) {
         this.avatar = avatar;

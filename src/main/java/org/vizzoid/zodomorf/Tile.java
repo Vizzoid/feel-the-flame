@@ -1,10 +1,16 @@
 package org.vizzoid.zodomorf;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import org.vizzoid.zodomorf.engine.TileInfo;
 import org.vizzoid.zodomorf.engine.TilePainter;
 
-public class Tile implements TilePainter {
+public class Tile implements TilePainter, Serializable {
 
+    private static final long serialVersionUID = 1L;
     public static final Tile EMPTY = new Tile(0, 0) {
         @Override
         public void setBackground(Material background) {
@@ -41,14 +47,27 @@ public class Tile implements TilePainter {
         }
     };
 
-
-    protected final Planet planet;
+    protected transient final Planet planet;
     protected double temperature;
     protected final int x;
     protected final int y;
-    protected Material background = Material.EMPTY;
-    protected Material material = Material.EMPTY;
-    protected int liquidSettleTick = 0;
+    protected transient Material background = Material.EMPTY;
+    protected transient Material material = Material.EMPTY;
+    protected transient int liquidSettleTick = 0;
+
+    private void writeObject(ObjectOutputStream oos) 
+      throws IOException {
+        oos.defaultWriteObject();
+        oos.writeUTF(background.getKey());
+        oos.writeUTF(material.getKey());
+    }
+
+    private void readObject(ObjectInputStream ois) 
+      throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+        background = Material.fromKey(ois.readUTF());
+        material = Material.fromKey(ois.readUTF());
+    }
 
     private Tile(int x, int y) {
         this.planet = null;
