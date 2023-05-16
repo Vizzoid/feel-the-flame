@@ -9,6 +9,8 @@ import org.vizzoid.zodomorf.engine.TilePainter;
 import java.awt.*;
 import java.util.Collection;
 
+import static org.vizzoid.zodomorf.engine.Images.*;
+
 public class Material implements TilePainter {
 
     private static final PresetMap<Material> materials = new PresetMap<>();
@@ -18,22 +20,23 @@ public class Material implements TilePainter {
     private static final Color BACKGROUND_SHADE = new Color(0, 0, 0, 140);
 
     static {
-        EMPTY = new Material(builder("empty").type(MaterialType.GAS)) {
+        EMPTY = new Material(builder("empty").gas()) {
             @Override
             public void paint(TileInfo info) {
 
             }
         };
-        OXYGEN = builder("oxygen").type(MaterialType.GAS).build();
-        FOUNDATION = builder("foundation").image(Images.foundation()).type(MaterialType.SOLID).build();
-        COPPER_ORE = builder("copper_ore").image(Images.copperOre()).type(MaterialType.SOLID).build();
-        SEDIMENTARY_ROCK = builder("sedimentary_rock").image(Images.sedimentaryRock()).type(MaterialType.SOLID).build();
-        IGNEOUS_ROCK = builder("igneous_rock").image(Images.igneousRock()).type(MaterialType.SOLID).build();
-        DIRT = builder("dirt").image(Images.dirt()).type(MaterialType.SOLID).build();
-        LAVA = builder("lava").image(Images.lava()).type(MaterialType.LIQUID).build();
+        OXYGEN = builder("oxygen").gas().build();
+        FOUNDATION = builder("foundation").image(foundation()).build();
+        COPPER_ORE = builder("copper_ore").image(copperOre()).build();
+        SEDIMENTARY_ROCK = builder("sedimentary_rock").rock().image(sedimentaryRock()).build();
+        IGNEOUS_ROCK = builder("igneous_rock").rock().image(igneousRock()).build();
+        DIRT = builder("dirt").image(dirt()).build();
+        LAVA = builder("lava").image(lava()).liquid().build();
 
         materials.close();
     }
+
 
     private static MaterialBuilder builder(String key) {
         return new MaterialBuilder().key(key);
@@ -50,13 +53,19 @@ public class Material implements TilePainter {
     private final Image image;
     private final MaterialType type;
     private final String key;
+    private final boolean rock;
 
     public Material(MaterialBuilder builder) {
         this.image = builder.image;
         this.type = builder.type;
         this.key = builder.key;
+        this.rock = builder.rock;
 
         materials.put(key, this);
+    }
+
+    public boolean isRock() {
+        return rock;
     }
 
     public String getKey() {
@@ -81,15 +90,23 @@ public class Material implements TilePainter {
 
     @Override
     public void paint(TileInfo info) {
-        if (isEmpty()) return;
+        if (isGas()) return;
         info.drawTile(image);
     }
 
     public void paintBackground(TileInfo info) {
-        if (isEmpty()) return;
+        if (isGas()) return;
         info.drawTile(image);
         info.graphics.setColor(BACKGROUND_SHADE);
         info.graphics.fillRect(info.screenX, info.screenY, info.squareSize, info.squareSize);
+    }
+
+    public boolean isGas() {
+        return type == MaterialType.GAS;
+    }
+
+    public boolean isLiquid() {
+        return type == MaterialType.LIQUID;
     }
 
     private static class MaterialBuilder implements IBuilder<Material> {
@@ -97,14 +114,25 @@ public class Material implements TilePainter {
         private String key = "empty";
         private Image image = Images.foundation();
         private MaterialType type = MaterialType.SOLID;
+        private boolean rock = false;
+
+        public MaterialBuilder rock() {
+            this.rock = true;
+            return this;
+        }
 
         public MaterialBuilder image(Image image) {
             this.image = image;
             return this;
         }
 
-        public MaterialBuilder type(MaterialType type) {
-            this.type = type;
+        public MaterialBuilder gas() {
+            this.type = MaterialType.GAS;
+            return this;
+        }
+
+        public MaterialBuilder liquid() {
+            this.type = MaterialType.LIQUID;
             return this;
         }
 

@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 
 public class DefaultEngine {
 
@@ -122,6 +123,10 @@ public class DefaultEngine {
 
     public void addKeyListener(KeyListener listener) {
         display.addKeyListener(listener);
+    }
+
+    public void addWheelListener(MouseWheelListener listener) {
+        display.addMouseWheelListener(listener);
     }
 
     public Sleeper getSleeper() {

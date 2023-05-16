@@ -11,18 +11,21 @@ import java.net.URL;
 
 public class Images {
 
-    private static final Image player, foundation, copperOre, sedimentaryRock, igneousRock, dirt, lava;
+    private static final Image player, foundation, copperOre, sedimentaryRock, igneousRock, dirt, lava, shadow;
 
     public static final int TILE_SIZE = 30;
+    public static final Color BROWN = new Color(98, 68, 51);
+    public static final Color BRONZE = new Color(205, 127, 50);
 
     static  {
         player = ofColor(Color.RED, TILE_SIZE, TILE_SIZE + TILE_SIZE);
         foundation = ofColor(Color.LIGHT_GRAY, TILE_SIZE, TILE_SIZE);
-        copperOre = ofColor(new Color(205, 127, 50), TILE_SIZE, TILE_SIZE);
+        copperOre = ofColor(BRONZE, TILE_SIZE, TILE_SIZE);
         sedimentaryRock = ofColor(Color.GRAY, TILE_SIZE, TILE_SIZE);
         igneousRock = ofColor(Color.DARK_GRAY, TILE_SIZE, TILE_SIZE);
-        dirt = ofColor(new Color(61, 43, 31), TILE_SIZE, TILE_SIZE);
+        dirt = ofColor(BROWN, TILE_SIZE, TILE_SIZE);
         lava = ofColor(Color.ORANGE, TILE_SIZE, TILE_SIZE);
+        shadow = ofColor(Color.BLACK, TILE_SIZE, TILE_SIZE);
     }
 
     private Images() {
@@ -55,6 +58,10 @@ public class Images {
 
     public static Image lava() {
         return lava;
+    }
+
+    public static Image shadow() {
+        return shadow;
     }
 
     public static String getJarPath() {

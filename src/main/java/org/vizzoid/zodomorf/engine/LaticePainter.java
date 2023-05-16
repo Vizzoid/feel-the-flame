@@ -43,8 +43,8 @@ public class LaticePainter implements Painter {
         for (int x = -squaresHalfWidth,
              maxSquaresWidth = squaresHalfWidth + 1,
              maxSquaresHeight = squaresHalfHeight + 1;
-             x < maxSquaresWidth; x++) {
-            for (int y = -squaresHalfHeight; y < maxSquaresHeight; y++) {
+             x <= maxSquaresWidth; x++) {
+            for (int y = -squaresHalfHeight; y <= maxSquaresHeight; y++) {
                 int screenX = (x * squareSize) + centerStart.getXInt();
                 int screenY = (y * squareSize) + centerStart.getYInt();
 
@@ -52,9 +52,17 @@ public class LaticePainter implements Painter {
                 int tileY = cameraY - y;
                 currentTile.set(graphics, screenX, screenY, squareSize, missedTime);
                 paintTile(tileX, tileY);
-                //graphics.drawString(tileX + ", " + tileY, screenX, screenY + squareSize);
+                // graphics.drawString(tileX + ", " + tileY, screenX, screenY + squareSize);
             }
         }
+    }
+
+    public double screenToX(int screenX) {
+        return camera.getTileX() + ((screenX - centerStart.getXInt()) / (double) squareSize);
+    }
+
+    public double screenToY(int screenY) {
+        return camera.getTileY() - ((screenY - centerStart.getYInt()) / (double) squareSize) + 1;
     }
 
     public void paintTile(int tileX, int tileY) {

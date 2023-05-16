@@ -38,6 +38,14 @@ public class Latice<T> implements Iterable<T> {
         return width;
     }
 
+    public T get(double x, double y) {
+        return get((int) x, (int) y);
+    }
+
+    public void set(double x, double y, T t) {
+        set((int) x, (int) y, t);
+    }
+
     public T get(int x, int y) {
         if (isOutOfBounds(x, y)) return defaultValue;
         return get(toIndex(x, y));
@@ -102,13 +110,13 @@ public class Latice<T> implements Iterable<T> {
 
     @NotNull
     @Override
-    public Iterator<T> iterator() {
+    public LaticeIterator iterator() {
         return new LaticeIterator();
     }
 
     public class LaticeIterator implements Iterator<T> {
 
-        int cursor;
+        public int cursor;
 
         public boolean hasNext() {
             return cursor != size;

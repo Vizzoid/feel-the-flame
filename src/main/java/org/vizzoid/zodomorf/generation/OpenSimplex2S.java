@@ -15,22 +15,22 @@ import java.util.function.Function;
 public class OpenSimplex2S {
 
     // added code (Vizzoid)
-    public <T> Latice<T> buildLatice(int width, int height, double frequency, Function<Double, T> function) {
+    public static <T> Latice<T> buildLatice(int width, int height, double frequency, Function<Double, T> function) {
         return buildLatice(width, height, ThreadLocalRandom.current().nextLong(), frequency, function);
     }
 
     // added code (Vizzoid)
-    public <T> Latice<T> buildLatice(int width, int height, long seed, double frequency, Function<Double, T> function) {
+    public static <T> Latice<T> buildLatice(int width, int height, long seed, double frequency, Function<Double, T> function) {
         return buildLatice(width, height, seed, frequency, frequency, function);
     }
 
     // added code (Vizzoid)
-    public <T> Latice<T> buildLatice(int width, int height,  double frequencyX, double frequencyY, Function<Double, T> function) {
+    public static <T> Latice<T> buildLatice(int width, int height,  double frequencyX, double frequencyY, Function<Double, T> function) {
         return buildLatice(width, height, ThreadLocalRandom.current().nextLong(), frequencyX, frequencyY, function);
     }
 
     // added code (Vizzoid)
-    public <T> Latice<T> buildLatice(int width, int height, long seed, double frequencyX, double frequencyY, Function<Double, T> function) {
+    public static <T> Latice<T> buildLatice(int width, int height, long seed, double frequencyX, double frequencyY, Function<Double, T> function) {
         Latice<T> latice = new Latice<>(width, height);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -42,22 +42,22 @@ public class OpenSimplex2S {
     }
 
     // added code (Vizzoid)
-    public Latice<Double> buildLatice(int width, int height, double frequency) {
+    public static Latice<Double> buildLatice(int width, int height, double frequency) {
         return buildLatice(width, height, ThreadLocalRandom.current().nextLong(), frequency);
     }
 
     // added code (Vizzoid)
-    public Latice<Double> buildLatice(int width, int height, long seed, double frequency) {
+    public static Latice<Double> buildLatice(int width, int height, long seed, double frequency) {
         return buildLatice(width, height, seed, frequency, frequency);
     }
 
     // added code (Vizzoid)
-    public Latice<Double> buildLatice(int width, int height,  double frequencyX, double frequencyY) {
+    public static Latice<Double> buildLatice(int width, int height,  double frequencyX, double frequencyY) {
         return buildLatice(width, height, ThreadLocalRandom.current().nextLong(), frequencyX, frequencyY);
     }
 
     // added code (Vizzoid)
-    public Latice<Double> buildLatice(int width, int height, long seed, double frequencyX, double frequencyY) {
+    public static Latice<Double> buildLatice(int width, int height, long seed, double frequencyX, double frequencyY) {
         Latice<Double> latice = new Latice<>(width, height);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {

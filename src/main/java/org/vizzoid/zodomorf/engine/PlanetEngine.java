@@ -1,24 +1,23 @@
 package org.vizzoid.zodomorf.engine;
 
 import org.vizzoid.utils.engine.DefaultEngine;
-import org.vizzoid.utils.engine.Painter;
 import org.vizzoid.utils.engine.Sleeper;
-import org.vizzoid.utils.position.MoveablePoint;
-import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.Planet;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.concurrent.Executors;
 
-public class PlanetEngine {
+public class PlanetEngine implements InputPainter {
 
     private static PlanetEngine instance;
 
     protected final Planet planet;
     protected final DefaultEngine engine;
-    private Painter painter;
+    private InputPainter painter;
     private final Sleeper tickSleeper = new Sleeper();
 
     public PlanetEngine(Planet planet) {
@@ -26,59 +25,19 @@ public class PlanetEngine {
         this.engine = new DefaultEngine() {
             @Override
             protected void prepare() {
-                super.prepare();
                 window.setResizable(false);
-                setDimension(new Dimension(1920, 1080));
+                display.setFocusable(true);
+                window.setUndecorated(true);
+                window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                setDimension(toolkit.getScreenSize());
+                window.setVisible(true);
             }
         };
         setPainter(newMazePainter());
-        Avatar player = planet.getAvatar();
-        engine.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A -> {
-                        if (!player.isMovingLeft()) {
-                            player.setMovingLeft(true);
-                        }
-                    }
-                    case KeyEvent.VK_D -> {
-                        if (!player.isMovingRight()) {
-                            player.setMovingRight(true);
-                        }
-                    }
-                    case KeyEvent.VK_SPACE -> {
-                        if(!player.isJumping()) {
-                            player.setJumping(true);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                MoveablePoint velocity = player.getVelocity();
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A -> {
-                        velocity.setX(0);
-                        player.setMovingLeft(false);
-                    }
-                    case KeyEvent.VK_D -> {
-                        velocity.setX(0);
-                        player.setMovingRight(false);
-                    }
-                    case KeyEvent.VK_SPACE -> {
-                        player.setJumping(false);
-                    }
-                }
-            }
-        });
+        engine.addMouseListener(this);
+        engine.addKeyListener(this);
+        engine.addWheelListener(this);
+        engine.addMotionListener(this);
         engine.getSleeper().setMaxFps(30);
 
         Executors.newSingleThreadExecutor().submit(() -> {
@@ -120,12 +79,72 @@ public class PlanetEngine {
         return engine;
     }
 
-    public Painter getPainter() {
+    public InputPainter getPainter() {
         return painter;
     }
 
-    public void setPainter(Painter painter) {
+    public void setPainter(InputPainter painter) {
         this.painter = painter;
         engine.setPainter(painter);
+    }
+
+    @Override
+    public void paint(Graphics graphics, long missedTime) {
+        painter.paint(graphics, missedTime);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        painter.keyTyped(e);
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        painter.keyPressed(e);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        painter.keyReleased(e);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        painter.mouseClicked(e);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        painter.mousePressed(e);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        painter.mouseReleased(e);
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        painter.mouseEntered(e);
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        painter.mouseExited(e);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        painter.mouseDragged(e);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        painter.mouseMoved(e);
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        painter.mouseWheelMoved(e);
     }
 }

@@ -1,6 +1,9 @@
 package org.vizzoid.zodomorf;
 
-import org.vizzoid.utils.position.*;
+import org.vizzoid.utils.position.DynamicRectangle;
+import org.vizzoid.utils.position.ImmoveablePoint;
+import org.vizzoid.utils.position.MoveablePoint;
+import org.vizzoid.utils.position.Rectangle;
 import org.vizzoid.zodomorf.engine.LaticeCamera;
 
 public class Avatar implements LaticeCamera {
@@ -14,9 +17,11 @@ public class Avatar implements LaticeCamera {
     private double food = 30000;
     private double temperature = 100;
     private boolean warmingUp = false;
-    private final DynamicRectangle hitbox = new DynamicRectangle(new ImmoveablePoint(500, 500), 1, 2, new MoveablePoint());
+    private final DynamicRectangle hitbox = new DynamicRectangle(new MoveablePoint(), 0.9, 1.9, new MoveablePoint());
     private boolean jumping;
     private boolean movingLeft, movingRight;
+    private Tile miningTile = Tile.EMPTY;
+    private int miningTileHealth;
 
     public Avatar() {
 
@@ -28,6 +33,8 @@ public class Avatar implements LaticeCamera {
 
     public void setPlanet(Planet planet) {
         this.planet = planet;
+        Latice<Tile> latice = planet.getTileLatice();
+        hitbox.getPos().set(latice.getWidth() * 0.5, 150);
     }
 
     public MoveablePoint getPos() {
@@ -139,6 +146,11 @@ public class Avatar implements LaticeCamera {
         if (food < 1) {
             health -= HEALTH_PER_STARVE;
         } else food -= ticks;
+
+        if (--miningTileHealth < 0) {
+            miningTile.setMaterial(Material.EMPTY);
+            miningTile = Tile.EMPTY;
+        }
     }
 
     @Override
@@ -186,4 +198,13 @@ public class Avatar implements LaticeCamera {
     public void setJumping(boolean b) {
         this.jumping = b;
     }
+
+    public void mine(Tile tile) {
+        if (!tile.isSolid()) return;
+        if (!tile.equals(miningTile)) {
+            this.miningTile = tile;
+            miningTileHealth = 5;
+        }
+    }
+
 }

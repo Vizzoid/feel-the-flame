@@ -1,10 +1,8 @@
 package org.vizzoid.zodomorf.engine;
 
-import org.vizzoid.utils.engine.Painter;
-
 import java.awt.*;
 
-public class GameOverPainter implements Painter {
+public class GameOverPainter implements InputPainter {
     @Override
     public void paint(Graphics graphics, long missedTime) {
         graphics.setColor(Color.BLACK);

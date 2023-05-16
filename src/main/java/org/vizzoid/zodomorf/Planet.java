@@ -6,15 +6,15 @@ public class Planet {
 
     private int time;
     private int day;
-    private double temperature;
-    private final Latice<Tile> latice = new Latice<>(1000, 1000);
+    private double temperature = buildSkyTemperature();
+    private final Latice<Tile> latice = new Latice<>(500, 250);
     private final Avatar avatar;
     private final Random random = new Random();
 
     public Planet(Avatar avatar) {
         this.avatar = avatar;
         avatar.setPlanet(this);
-        this.latice.setDefaultValue(new Tile(this));
+        this.latice.setDefaultValue(new Tile(this, 0, 0));
     }
 
     public int getDay() {
