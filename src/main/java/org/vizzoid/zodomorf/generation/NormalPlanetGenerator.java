@@ -17,10 +17,10 @@ public class NormalPlanetGenerator implements PlanetGenerator {
         return (max - min) * ((noise + 1) * 0.5) + min;
     }
 
-    private final Material sea;
+    private final PlanetTileSet set;
 
-    public NormalPlanetGenerator(Material sea) {
-        this.sea = sea;
+    public NormalPlanetGenerator(PlanetTileSet set) {
+        this.set = set;
     }
 
     @Override
@@ -50,13 +50,13 @@ public class NormalPlanetGenerator implements PlanetGenerator {
             
             int dirtHeight = heightX - DIRT_DEPTH;
             for (int y = dirtHeight; y < heightX; y++) {
-                latice.set(x, y, new Tile(planet, Material.DIRT, x, y));
+                latice.set(x, y, new Tile(planet, set.dirt(), x, y));
             }
             for (int y = 0; y < dirtHeight; y++) {
-                latice.set(x, y, new Tile(planet, Material.SEDIMENTARY_ROCK, x, y));
+                latice.set(x, y, new Tile(planet, set.crust(), x, y));
             }
             for (int y = heightX; y <= SEA_LEVEL; y++) {
-                latice.set(x, y, new Tile(planet, sea, x, y));
+                latice.set(x, y, new Tile(planet, set.sea(), x, y));
             }
         }
 
@@ -66,16 +66,16 @@ public class NormalPlanetGenerator implements PlanetGenerator {
                 if (!tile.getMaterial().isRock()) continue;
                 double noise = OpenSimplex2S.noise2_ImproveX(caveSeed, x * CAVE_FREQUENCY, y * CAVE_FREQUENCY);
                 if (noise > 0.1) {
-                    if (noise > (0.8 - (((MAX_HEIGHT - (double) y) * 0.2) / MAX_HEIGHT))) tile.setMaterial(Material.LAVA);
-                    else tile.setMaterial(Material.EMPTY);
+                    if (noise > (0.8 - (((MAX_HEIGHT - (double) y) * 0.2) / MAX_HEIGHT))) tile.setMaterial(set.sea());
+                    else tile.setMaterial(set.caveAir());
                     continue;
                 }
                 double rockNoise = OpenSimplex2S.noise2_ImproveX(rockSeed, x * ROCK_FREQUENCY, y * ROCK_FREQUENCY);
-                if (rockNoise <= 0 && y < IGNEOUS_HEIGHT) tile.setMaterial(Material.IGNEOUS_ROCK);
-                else tile.setMaterial(Material.SEDIMENTARY_ROCK);
+                if (rockNoise <= 0 && y < IGNEOUS_HEIGHT) tile.setMaterial(set.mantle());
+                else tile.setMaterial(set.crust());
 
                 double oreNoise = OpenSimplex2S.noise2_ImproveX(rockSeed, x * ORE_FREQUENCY, y * ORE_FREQUENCY);
-                if (oreNoise > 0.55) latice.set(x, y, new Tile(planet, Material.COPPER_ORE, x, y));
+                if (oreNoise > 0.55) latice.set(x, y, new Tile(planet, set.metal(), x, y));
             }
         }
 

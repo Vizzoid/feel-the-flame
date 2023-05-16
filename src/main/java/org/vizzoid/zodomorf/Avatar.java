@@ -111,6 +111,10 @@ public class Avatar implements LaticeCamera {
                 if (movingRight) velocity.setX(0.5);
             }
         }
+        // potential bugs: if jumping into block may faze through as collision is not tested (Will not work before collision with current system because gravity is removed with collision
+        if (jumping && velocity.getY() == GRAVITY) {
+            velocity.setY(0.5);
+        }
         {
             int tileX = getTileX();
             int tileY = getTileY();
@@ -126,10 +130,6 @@ public class Avatar implements LaticeCamera {
                     hitbox.resolve(new Rectangle(new ImmoveablePoint(x, y), 1, 1));
                 }
             }
-        }
-        // potential bugs: if jumping into block may faze through as collision is not tested (Will not work before collision with current system because gravity is removed with collision
-        if (jumping && velocity.getY() == 0) {
-            velocity.setY(0.5);
         }
         {
             MoveablePoint effectiveVelocity = velocity.multiply(ticks);

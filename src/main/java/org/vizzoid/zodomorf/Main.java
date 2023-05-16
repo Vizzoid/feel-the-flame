@@ -4,6 +4,7 @@ import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.zodomorf.engine.PlanetEngine;
 import org.vizzoid.zodomorf.generation.NormalPlanetGenerator;
 import org.vizzoid.zodomorf.generation.OpenSimplex2S;
+import org.vizzoid.zodomorf.generation.PlanetTileSet;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -19,7 +20,7 @@ public class Main {
             Planet planet = new Planet(new Avatar());
             PlanetEngine.start(planet);
 
-            new NormalPlanetGenerator(Material.LAVA).generate(planet);
+            new NormalPlanetGenerator(new PlanetTileSet()).generate(planet);
             return;
         }
 
