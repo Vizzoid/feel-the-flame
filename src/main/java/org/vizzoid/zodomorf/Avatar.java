@@ -20,8 +20,9 @@ public class Avatar implements LaticeCamera {
     private final DynamicRectangle hitbox = new DynamicRectangle(new MoveablePoint(), 0.9, 1.9, new MoveablePoint());
     private boolean jumping;
     private boolean movingLeft, movingRight;
-    private Tile miningTile = Tile.EMPTY;
     private int miningTileHealth;
+    private Tile mouseTile = Tile.EMPTY;
+    private boolean clicking = false;
 
     public Avatar() {
 
@@ -147,10 +148,13 @@ public class Avatar implements LaticeCamera {
             health -= HEALTH_PER_STARVE;
         } else food -= ticks;
 
-        if (--miningTileHealth < 0) {
-            miningTile.setMaterial(Material.EMPTY);
-            miningTile = Tile.EMPTY;
-        }
+        if (clicking) {
+            if (--miningTileHealth < 0) {
+                mouseTile.setMaterial(Material.EMPTY);
+                mouseTile = Tile.EMPTY;
+                miningTileHealth = 5;
+            }
+        } else miningTileHealth = 5;
     }
 
     @Override
@@ -199,12 +203,29 @@ public class Avatar implements LaticeCamera {
         this.jumping = b;
     }
 
-    public void mine(Tile tile) {
-        if (!tile.isSolid()) return;
-        if (!tile.equals(miningTile)) {
-            this.miningTile = tile;
-            miningTileHealth = 5;
-        }
+    public double getTemperature() {
+        return temperature;
     }
 
+    public DynamicRectangle getHitbox() {
+        return hitbox;
+    }
+
+    public int getMiningTileHealth() {
+        return miningTileHealth;
+    }
+
+    public Tile getMouseTile() {
+        return mouseTile;
+    }
+
+    public void setMouseTile(Tile mouseTile) {
+        if (!mouseTile.isSolid()) mouseTile = Tile.EMPTY;
+        this.mouseTile = mouseTile;
+        miningTileHealth = 5;
+    }
+
+    public void setClicking(boolean clicking) {
+        this.clicking = clicking;
+    }
 }

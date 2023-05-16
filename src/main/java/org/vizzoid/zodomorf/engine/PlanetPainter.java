@@ -77,11 +77,30 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
     @Override
     public void mousePressed(MouseEvent e) {
         Tile tile = planet.getTileLatice().get(screenToX(e.getX()), screenToY(e.getY()));
-        planet.getAvatar().mine(tile);
+        Avatar avatar = planet.getAvatar();
+        avatar.setMouseTile(tile);
+        avatar.setClicking(true);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        Tile tile = planet.getTileLatice().get(screenToX(e.getX()), screenToY(e.getY()));
+        Avatar avatar = planet.getAvatar();
+        avatar.setMouseTile(tile);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        Tile tile = planet.getTileLatice().get(screenToX(e.getX()), screenToY(e.getY()));
+        Avatar avatar = planet.getAvatar();
+        avatar.setMouseTile(tile);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        Avatar avatar = planet.getAvatar();
+        avatar.setMouseTile(Tile.EMPTY);
+        avatar.setClicking(false);
     }
 
 }
