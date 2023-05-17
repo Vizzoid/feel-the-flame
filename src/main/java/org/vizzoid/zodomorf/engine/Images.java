@@ -1,5 +1,7 @@
 package org.vizzoid.zodomorf.engine;
 
+import org.vizzoid.zodomorf.Avatar;
+
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,7 +20,7 @@ public class Images {
     public static final Color BRONZE = new Color(205, 127, 50);
 
     static  {
-        player = ofColor(Color.RED, TILE_SIZE, TILE_SIZE + TILE_SIZE);
+        player = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
         foundation = ofColor(Color.LIGHT_GRAY, TILE_SIZE, TILE_SIZE);
         copperOre = ofColor(BRONZE, TILE_SIZE, TILE_SIZE);
         sedimentaryRock = ofColor(Color.GRAY, TILE_SIZE, TILE_SIZE);

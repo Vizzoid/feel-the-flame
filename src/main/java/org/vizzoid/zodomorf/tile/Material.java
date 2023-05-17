@@ -1,4 +1,4 @@
-package org.vizzoid.zodomorf;
+package org.vizzoid.zodomorf.tile;
 
 import org.vizzoid.utils.IBuilder;
 import org.vizzoid.utils.PresetMap;
@@ -8,6 +8,7 @@ import org.vizzoid.zodomorf.engine.TilePainter;
 
 import java.awt.*;
 import java.util.Collection;
+import java.util.function.Function;
 
 import static org.vizzoid.zodomorf.engine.Images.*;
 
@@ -27,12 +28,12 @@ public class Material implements TilePainter {
             }
         };
         OXYGEN = builder("oxygen").gas().build();
-        FOUNDATION = builder("foundation").image(foundation()).build();
-        COPPER_ORE = builder("copper_ore").image(copperOre()).build();
-        SEDIMENTARY_ROCK = builder("sedimentary_rock").rock().image(sedimentaryRock()).build();
-        IGNEOUS_ROCK = builder("igneous_rock").rock().image(igneousRock()).build();
-        DIRT = builder("dirt").image(dirt()).build();
-        LAVA = builder("lava").image(lava()).liquid().build();
+        FOUNDATION = builder("foundation").health(10).image(foundation()).build();
+        COPPER_ORE = builder("copper_ore").health(4).image(copperOre()).build();
+        SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).rock().image(sedimentaryRock()).build();
+        IGNEOUS_ROCK = builder("igneous_rock").rock().health(3).image(igneousRock()).build();
+        DIRT = builder("dirt").health(1).image(dirt()).build();
+        LAVA = builder("lava").settleTicks(8).image(lava()).liquid().build();
 
         materials.close();
     }
@@ -58,12 +59,18 @@ public class Material implements TilePainter {
     private final MaterialType type;
     private final String key;
     private final boolean rock;
+    private final int health;
+    private final int settleTicks;
+    private final Function<Tile, TileBehavior> behaviorBuilder;
 
     public Material(MaterialBuilder builder) {
         this.image = builder.image;
         this.type = builder.type;
         this.key = builder.key;
         this.rock = builder.rock;
+        this.health = builder.health;
+        this.settleTicks = builder.settleTicks;
+        this.behaviorBuilder = builder.behaviorBuilder;
 
         materials.put(key, this);
     }
@@ -113,12 +120,27 @@ public class Material implements TilePainter {
         return type == MaterialType.LIQUID;
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public int getSettleTicks() {
+        return settleTicks;
+    }
+
+    public TileBehavior buildBehavior(Tile t) {
+        return behaviorBuilder.apply(t);
+    }
+
     private static class MaterialBuilder implements IBuilder<Material> {
 
         private String key = "empty";
         private Image image = Images.foundation();
         private MaterialType type = MaterialType.SOLID;
         private boolean rock = false;
+        private int health = 1;
+        private int settleTicks = -1;
+        private Function<Tile, TileBehavior> behaviorBuilder = t -> TileBehavior.EMPTY;
 
         public MaterialBuilder rock() {
             this.rock = true;
@@ -137,11 +159,26 @@ public class Material implements TilePainter {
 
         public MaterialBuilder liquid() {
             this.type = MaterialType.LIQUID;
-            return this;
+            return behaviorBuilder(Fluid::new);
         }
 
         public MaterialBuilder key(String key) {
             this.key = key;
+            return this;
+        }
+
+        public MaterialBuilder health(int health) {
+            this.health = health;
+            return this;
+        }
+
+        public MaterialBuilder settleTicks(int settleTicks) {
+            this.settleTicks = settleTicks;
+            return this;
+        }
+
+        public MaterialBuilder behaviorBuilder(Function<Tile, TileBehavior> behaviorBuilder) {
+            this.behaviorBuilder = behaviorBuilder;
             return this;
         }
 

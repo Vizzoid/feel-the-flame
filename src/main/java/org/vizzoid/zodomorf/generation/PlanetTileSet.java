@@ -1,6 +1,6 @@
 package org.vizzoid.zodomorf.generation;
 
-import org.vizzoid.zodomorf.Material;
+import org.vizzoid.zodomorf.tile.Material;
 
 public class PlanetTileSet {
     
@@ -32,6 +32,7 @@ public class PlanetTileSet {
         this.crust = sea;
         this.mantle = sea;
         this.metal = sea;
+        this.dirt = Material.EMPTY;
         return this;
     }
 

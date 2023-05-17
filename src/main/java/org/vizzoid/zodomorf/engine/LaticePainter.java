@@ -57,12 +57,20 @@ public class LaticePainter implements Painter {
         }
     }
 
+    public double relativeX(int screenX) {
+        return ((screenX - centerStart.getXInt()) / (double) squareSize);
+    }
+
+    public double relativeY(int screenY) {
+        return ((screenY - centerStart.getYInt()) / (double) -squareSize) + 1;
+    }
+
     public double screenToX(int screenX) {
-        return camera.getTileX() + ((screenX - centerStart.getXInt()) / (double) squareSize);
+        return camera.getTileX() + relativeX(screenX);
     }
 
     public double screenToY(int screenY) {
-        return camera.getTileY() - ((screenY - centerStart.getYInt()) / (double) squareSize) + 1;
+        return camera.getTileY() + relativeY(screenY);
     }
 
     public void paintTile(int tileX, int tileY) {

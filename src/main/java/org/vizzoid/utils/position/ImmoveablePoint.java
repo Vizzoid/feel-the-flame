@@ -1,5 +1,6 @@
 package org.vizzoid.utils.position;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -7,7 +8,8 @@ import java.io.Serializable;
  */
 public class ImmoveablePoint implements Point, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = -953012273154690741L;
 
     private double x, y;
 

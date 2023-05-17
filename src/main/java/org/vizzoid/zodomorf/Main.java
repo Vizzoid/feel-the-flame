@@ -5,24 +5,65 @@ import org.vizzoid.zodomorf.engine.PlanetEngine;
 import org.vizzoid.zodomorf.generation.NormalPlanetGenerator;
 import org.vizzoid.zodomorf.generation.OpenSimplex2S;
 import org.vizzoid.zodomorf.generation.PlanetTileSet;
+import org.vizzoid.zodomorf.tile.Tile;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         boolean visual = false;
 
         if (!visual) {
             Game game = new Game();
-            Planet planet = new Planet(game.getAvatar());
+            Planet planet = new Planet();
             game.getPlanets().add(planet);
-            PlanetEngine.start(planet);
 
             new NormalPlanetGenerator(new PlanetTileSet()).generate(planet);
+            planet.setAvatar(game.getAvatar());
+            Latice<Tile> latice = planet.getTileLatice();
+            int height = latice.getHeight();
+            int x = (int) (latice.getWidth() * 0.5);
+            int y = height - 2;
+            for (; y >= 0; y--) {
+                if (latice.get(x, y).isSolid()) break;
+            }
+            game.getAvatar().getPos().set(x, y + 1);
+            PlanetEngine.start(planet);
+
+            /*FileOutputStream fileOutputStream
+                    = new FileOutputStream("planet.txt");
+            ObjectOutputStream objectOutputStream
+                    = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(game);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+
+            FileInputStream fileInputStream
+                    = new FileInputStream("planet.txt");
+            ObjectInputStream objectInputStream
+                    = new ObjectInputStream(fileInputStream);
+            Game game1 = (Game) objectInputStream.readObject();
+            objectInputStream.close();
+            Planet planet1 = game1.getPlanets().get(0);
+            planet1.setAvatar(game1.getAvatar());
+            PlanetEngine.start(planet1);
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    FileOutputStream fileOutputStream1 = new FileOutputStream("planet.txt");
+                    ObjectOutputStream objectOutputStream1 = new ObjectOutputStream(fileOutputStream1);
+                    objectOutputStream1.writeObject(game1);
+                    objectOutputStream1.flush();
+                    objectOutputStream1.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }));*/
             return;
         }
 

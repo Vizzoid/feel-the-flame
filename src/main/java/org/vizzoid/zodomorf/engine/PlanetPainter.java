@@ -4,7 +4,6 @@ import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.utils.position.MoveablePoint;
 import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.Planet;
-import org.vizzoid.zodomorf.Tile;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,6 +11,7 @@ import java.awt.event.MouseEvent;
 
 public class PlanetPainter extends LaticePainter implements InputPainter {
 
+    public static boolean TEMP = false;
     private final Planet planet;
     private final IntPoint tileCenter;
 
@@ -30,7 +30,10 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
 
         super.paint(graphics, missedTime);
 
-        graphics.drawImage(Images.player(), tileCenter.getXInt() - (squareSize / 2), tileCenter.getYInt() - (squareSize), null);
+        Image playerImage = Images.player();
+        graphics.drawImage(playerImage,
+                tileCenter.getXInt() - (playerImage.getWidth(null) / 2),
+                tileCenter.getYInt() - (playerImage.getHeight(null) / 2) - (Images.TILE_SIZE / 2), null);
     }
 
     @Override
@@ -52,6 +55,7 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
                     player.setJumping(true);
                 }
             }
+            case KeyEvent.VK_S -> TEMP = !TEMP;
         }
     }
 
@@ -76,30 +80,26 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Tile tile = planet.getTileLatice().get(screenToX(e.getX()), screenToY(e.getY()));
         Avatar avatar = planet.getAvatar();
-        avatar.setMouseTile(tile);
+        avatar.getMouseTile().set(relativeX(e.getX()), relativeY(e.getY()));
         avatar.setClicking(true);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Tile tile = planet.getTileLatice().get(screenToX(e.getX()), screenToY(e.getY()));
         Avatar avatar = planet.getAvatar();
-        avatar.setMouseTile(tile);
+        avatar.getMouseTile().set(relativeX(e.getX()), relativeY(e.getY()));
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Tile tile = planet.getTileLatice().get(screenToX(e.getX()), screenToY(e.getY()));
         Avatar avatar = planet.getAvatar();
-        avatar.setMouseTile(tile);
+        avatar.getMouseTile().set(relativeX(e.getX()), relativeY(e.getY()));
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         Avatar avatar = planet.getAvatar();
-        avatar.setMouseTile(Tile.EMPTY);
         avatar.setClicking(false);
     }
 

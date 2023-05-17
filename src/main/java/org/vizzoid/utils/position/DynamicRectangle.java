@@ -1,6 +1,11 @@
 package org.vizzoid.utils.position;
 
+import java.io.Serial;
+
 public class DynamicRectangle extends Rectangle {
+
+    @Serial
+    private static final long serialVersionUID = 3868192857285587301L;
 
     private final MoveablePoint velocity;
 

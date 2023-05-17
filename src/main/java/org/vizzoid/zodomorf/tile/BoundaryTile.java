@@ -1,10 +1,14 @@
-package org.vizzoid.zodomorf;
+package org.vizzoid.zodomorf.tile;
 
+import org.vizzoid.zodomorf.Planet;
 import org.vizzoid.zodomorf.engine.TileInfo;
+
+import java.io.Serial;
 
 public class BoundaryTile extends Tile {
 
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = -3122486500832223806L;
 
     public BoundaryTile(Planet planet, int x, int y) {
         super(planet, x, y);

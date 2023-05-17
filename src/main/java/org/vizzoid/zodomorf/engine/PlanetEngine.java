@@ -67,7 +67,7 @@ public class PlanetEngine implements InputPainter {
     }
 
     public void tick(long missedTime) {
-        planet.tick(missedTime);
+        planet.tick(1);
 
         if (painter instanceof GameOverPainter) return;
         if (planet.getAvatar().isDead()) {

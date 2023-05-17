@@ -1,4 +1,4 @@
-package org.vizzoid.zodomorf;
+package org.vizzoid.zodomorf.tile;
 
 public enum MaterialType {
     SOLID,

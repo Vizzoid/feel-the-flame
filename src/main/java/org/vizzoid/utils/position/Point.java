@@ -21,16 +21,26 @@ public interface Point {
 
     ImmoveablePoint immoveable();
 
+    /**
+     * Creates new point with the same coordinates but moveable
+     */
     @CheckReturnValue
     default MoveablePoint copyMoveable() {
         return new MoveablePoint(getX(), getY());
     }
 
+    /**
+     * Creates new point with the same coordinates but immoveable
+     */
     @CheckReturnValue
     default ImmoveablePoint copyImmoveable() {
         return new ImmoveablePoint(getX(), getY());
     }
 
+    /**
+     * new point that is a vector from this position to the inputted position
+     * same as position.subtract(this)
+     */
     default MoveablePoint line(Point position) {
         MoveablePoint line = new MoveablePoint();
         line.setX(position.getX() - getX());
@@ -39,6 +49,10 @@ public interface Point {
         return line;
     }
 
+    /**
+     * normalizes the vector (reduces/increases the vector to a length of 1
+     * same as divide(length())
+     */
     default MoveablePoint normalize() {
         MoveablePoint position = moveable();
         double length = length();
@@ -49,6 +63,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * pythagorean's scale, length of vector
+     */
     default double lengthSqr() {
         double x = getX();
         double y = getY();
@@ -56,6 +73,9 @@ public interface Point {
         return (x * x + y * y);
     }
 
+    /**
+     * pythagorean's scale, length of vector
+     */
     default double length() {
         return Math.sqrt(lengthSqr());
     }
@@ -77,6 +97,9 @@ public interface Point {
 
     // movement utility
 
+    /**
+     * Adds the values of position1 to this position and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint add(Point position1) {
         MoveablePoint position = copyMoveable();
@@ -84,6 +107,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * Subtracts the values of this position by position1 and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint subtract(Point position1) {
         MoveablePoint position = copyMoveable();
@@ -91,6 +117,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * Multiplies the values of this position by position1 and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint multiply(Point position1) {
         MoveablePoint position = copyMoveable();
@@ -98,6 +127,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * Divides the values of this position by position1 and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint divide(Point position1) {
         MoveablePoint position = copyMoveable();
@@ -105,6 +137,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * Adds the factor to each coord of this position and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint add(double factor) {
         MoveablePoint position = copyMoveable();
@@ -112,6 +147,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * Subtracts the factor to each coord of this position and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint subtract(double factor) {
         MoveablePoint position = copyMoveable();
@@ -119,6 +157,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * Multiplies the factor to each coord of this position and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint multiply(double factor) {
         MoveablePoint position = copyMoveable();
@@ -126,6 +167,9 @@ public interface Point {
         return position;
     }
 
+    /**
+     * Divides the factor to each coord of this position and stores it in a NEW position
+     */
     @CheckReturnValue
     default MoveablePoint divide(double factor) {
         MoveablePoint position = copyMoveable();

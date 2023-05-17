@@ -1,9 +1,14 @@
 package org.vizzoid.utils.position;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Axis-aligned rectangle
  */
-public class Rectangle {
+public class Rectangle implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 3962787430742838784L;
 
     protected final MoveablePoint pos;
     protected final double width;

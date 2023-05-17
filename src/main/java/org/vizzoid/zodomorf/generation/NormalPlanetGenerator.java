@@ -1,6 +1,9 @@
 package org.vizzoid.zodomorf.generation;
 
 import org.vizzoid.zodomorf.*;
+import org.vizzoid.zodomorf.tile.BoundaryTile;
+import org.vizzoid.zodomorf.tile.Material;
+import org.vizzoid.zodomorf.tile.Tile;
 
 import java.util.Random;
 
@@ -36,6 +39,8 @@ public class NormalPlanetGenerator implements PlanetGenerator {
         long heightVariationSeed = r.nextLong();
         long caveSeed = r.nextLong();
         long rockSeed = r.nextLong();
+        long igneousHeightSeed = r.nextLong();
+        long caveHeightSeed = r.nextLong();
 
         int[] heights = new int[width];
         for (int x = 0; x < width; x++) {
@@ -60,22 +65,37 @@ public class NormalPlanetGenerator implements PlanetGenerator {
             }
         }
 
+        int[] caveHeights = new int[heights.length];
+        for (int x = 0; x < caveHeights.length; x++) {
+            double caveHeight = OpenSimplex2S.noise2(caveHeightSeed, x * HEIGHT_FREQUENCY, 0);
+            caveHeights[x] = (int) ((heights[x] - CAVE_DEPTH) + clamp(caveHeight, -5, 5));
+        }
+
+        int[] igneousHeights = new int[heights.length];
+        for (int x = 0; x < igneousHeights.length; x++) {
+            double igneousHeight = OpenSimplex2S.noise2(igneousHeightSeed, x * HEIGHT_FREQUENCY, 0);
+            igneousHeights[x] = (int) (IGNEOUS_HEIGHT + clamp(igneousHeight, -10, 10));
+        }
+
         for (int x = 0; x < width; x++) {
-            for (int y = 0, caveLevel = heights[x] - CAVE_DEPTH; y < caveLevel; y++) {
+            for (int y = 0, caveLevel = caveHeights[x]; y < caveLevel; y++) {
                 Tile tile = latice.get(x, y);
-                if (!tile.getMaterial().isRock()) continue;
+
+                Material rock = set.crust();
+
+                double rockNoise = OpenSimplex2S.noise2_ImproveX(rockSeed, x * ROCK_FREQUENCY, y * ROCK_FREQUENCY);
+                if (rockNoise <= 0 && y < igneousHeights[x]) rock = set.mantle();
+
+                double oreNoise = OpenSimplex2S.noise2_ImproveX(rockSeed, x * ORE_FREQUENCY, y * ORE_FREQUENCY);
+                if (oreNoise > 0.55) rock = set.metal();
+
                 double noise = OpenSimplex2S.noise2_ImproveX(caveSeed, x * CAVE_FREQUENCY, y * CAVE_FREQUENCY);
                 if (noise > 0.1) {
                     if (noise > (0.8 - (((MAX_HEIGHT - (double) y) * 0.2) / MAX_HEIGHT))) tile.setMaterial(set.sea());
                     else tile.setMaterial(set.caveAir());
-                    continue;
+                    tile.setBackground(rock);
                 }
-                double rockNoise = OpenSimplex2S.noise2_ImproveX(rockSeed, x * ROCK_FREQUENCY, y * ROCK_FREQUENCY);
-                if (rockNoise <= 0 && y < IGNEOUS_HEIGHT) tile.setMaterial(set.mantle());
-                else tile.setMaterial(set.crust());
-
-                double oreNoise = OpenSimplex2S.noise2_ImproveX(rockSeed, x * ORE_FREQUENCY, y * ORE_FREQUENCY);
-                if (oreNoise > 0.55) latice.set(x, y, new Tile(planet, set.metal(), x, y));
+                else tile.setMaterial(rock);
             }
         }
 
@@ -92,9 +112,13 @@ public class NormalPlanetGenerator implements PlanetGenerator {
             latice.set(x, endY, new BoundaryTile(planet, x, endY));
         }
 
-        for (Tile tile : latice) {
-            tile.settle();
+        for (int i = 0; i < 1000; i++) { // "settle" the liquids (please find something that works better)
+            for (Tile tile : latice) {
+                if (!tile.isLiquid()) continue;
+                tile.tick(1);
+            }
         }
+
     }
 
 }
