@@ -13,21 +13,34 @@ import java.net.URL;
 
 public class Images {
 
-    private static final Image player, foundation, copperOre, sedimentaryRock, igneousRock, dirt, lava, shadow;
+    public static final Image IPLAYER, IFOUNDATION, ICOPPER_ORE, ISEDIMENTARY_ROCK, IIGNEOUS_ROCK, IDIRT, ILAVA, ISHADOW,
+            IDEBRIS, ICLAY, ISILICATE, INICKEL, IASH, IGRAVEL, IGOLD, ISAND, ISANDSTONE, IICE, IOBSIDIAN, IWATER, ISULFUR, IMERCURY;
 
-    public static final int TILE_SIZE = 30;
-    public static final Color BROWN = new Color(98, 68, 51);
-    public static final Color BRONZE = new Color(205, 127, 50);
+    public static final int TILE_SIZE = 3;
 
     static  {
-        player = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
-        foundation = ofColor(Color.LIGHT_GRAY, TILE_SIZE, TILE_SIZE);
-        copperOre = ofColor(BRONZE, TILE_SIZE, TILE_SIZE);
-        sedimentaryRock = ofColor(Color.GRAY, TILE_SIZE, TILE_SIZE);
-        igneousRock = ofColor(Color.DARK_GRAY, TILE_SIZE, TILE_SIZE);
-        dirt = ofColor(BROWN, TILE_SIZE, TILE_SIZE);
-        lava = ofColor(Color.ORANGE, TILE_SIZE, TILE_SIZE);
-        shadow = ofColor(Color.BLACK, TILE_SIZE, TILE_SIZE);
+        IPLAYER = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
+        IFOUNDATION = ofColor(Color.LIGHT_GRAY);
+        ICOPPER_ORE = ofColor(new Color(205, 127, 50));
+        ISEDIMENTARY_ROCK = ofColor(Color.GRAY);
+        IIGNEOUS_ROCK = ofColor(Color.DARK_GRAY);
+        IDIRT = ofColor(new Color(98, 68, 51));
+        ILAVA = ofColor(Color.ORANGE);
+        ISHADOW = ofColor(Color.BLACK);
+        IDEBRIS = ofColor(Color.GRAY);
+        ICLAY = ofColor(new Color(138, 124, 85));
+        ISILICATE = ofColor(new Color(156,187,120));
+        INICKEL = ofColor(new Color(201,186,169));
+        IASH = ofColor(Color.LIGHT_GRAY);
+        IGRAVEL = ofColor(Color.GRAY);
+        IGOLD = ofColor(new Color(255, 215, 0));
+        ISAND = ofColor(new Color(194, 178, 128));
+        ISANDSTONE = ofColor(new Color(213,194,165));
+        IICE = ofColor(Color.CYAN);
+        IOBSIDIAN = ofColor(new Color(113,98,122));
+        IWATER = ofColor(Color.BLUE);
+        ISULFUR = ofColor(new Color(243, 222, 56));
+        IMERCURY = ofColor(new Color(219,206,202));
     }
 
     private Images() {
@@ -35,35 +48,7 @@ public class Images {
     }
 
     public static Image player() {
-        return player;
-    }
-
-    public static Image foundation() {
-        return foundation;
-    }
-
-    public static Image copperOre() {
-        return copperOre;
-    }
-
-    public static Image sedimentaryRock() {
-        return sedimentaryRock;
-    }
-
-    public static Image igneousRock() {
-        return igneousRock;
-    }
-
-    public static Image dirt() {
-        return dirt;
-    }
-
-    public static Image lava() {
-        return lava;
-    }
-
-    public static Image shadow() {
-        return shadow;
+        return IPLAYER;
     }
 
     public static String getJarPath() {
@@ -97,6 +82,10 @@ public class Images {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static BufferedImage ofColor(Color color) {
+        return ofColor(color, TILE_SIZE, TILE_SIZE);
     }
 
     public static BufferedImage ofColor(Color color, int width, int height) {

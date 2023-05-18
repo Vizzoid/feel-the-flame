@@ -175,20 +175,19 @@ public class Tile implements TilePainter, Serializable {
         return material.isSolid();
     }
 
-    private static final Color TILE_BREAKING = new Color(255, 255, 255, 153);
+    private static final Color TILE_BREAKING = new Color(255, 255, 255, 118);
 
     @Override
     public void paint(TileInfo info) {
-        background.paintBackground(info);
+        //background.paintBackground(info);
         material.paint(info);
 
         Avatar avatar = planet.getAvatar();
-        if (equals(avatar.getClickTile())) {
-            int miningTileHealth = avatar.getMiningTileHealth();
-            int health = getHealth();
+        if (isSolid() && equals(avatar.getClickTile())) {
+            double miningTileHealth = avatar.getMiningTileHealth();
+            double health = getHealth();
             info.graphics.setColor(TILE_BREAKING);
-            System.out.println(miningTileHealth + " - " + health);
-            int height = info.squareSize * ((health - miningTileHealth) / health);
+            int height = (int) (info.squareSize * ((health - miningTileHealth) / health));
             info.graphics.fillRect(info.screenX, info.screenY + (info.squareSize - height), info.squareSize, height);
         }
 

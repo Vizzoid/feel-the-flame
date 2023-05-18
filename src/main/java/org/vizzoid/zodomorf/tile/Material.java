@@ -2,7 +2,6 @@ package org.vizzoid.zodomorf.tile;
 
 import org.vizzoid.utils.IBuilder;
 import org.vizzoid.utils.PresetMap;
-import org.vizzoid.zodomorf.engine.Images;
 import org.vizzoid.zodomorf.engine.TileInfo;
 import org.vizzoid.zodomorf.engine.TilePainter;
 
@@ -17,7 +16,7 @@ public class Material implements TilePainter {
     private static final PresetMap<Material> materials = new PresetMap<>();
 
     public static final Material
-            EMPTY, OXYGEN, FOUNDATION, COPPER_ORE, SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA;
+            EMPTY, OXYGEN, FOUNDATION, COPPER_ORE, SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA, DEBRIS, CLAY, SILICATE, NICKEL, ASH, GRAVEL, GOLD, SAND, SANDSTONE, ICE, OBSIDIAN, WATER, SULFUR, MERCURY;
     private static final Color BACKGROUND_SHADE = new Color(0, 0, 0, 140);
 
     static {
@@ -28,12 +27,26 @@ public class Material implements TilePainter {
             }
         };
         OXYGEN = builder("oxygen").gas().build();
-        FOUNDATION = builder("foundation").health(10).image(foundation()).build();
-        COPPER_ORE = builder("copper_ore").health(4).image(copperOre()).build();
-        SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).rock().image(sedimentaryRock()).build();
-        IGNEOUS_ROCK = builder("igneous_rock").rock().health(3).image(igneousRock()).build();
-        DIRT = builder("dirt").health(1).image(dirt()).build();
-        LAVA = builder("lava").settleTicks(8).image(lava()).liquid().build();
+        FOUNDATION = builder("foundation").health(10).image(IFOUNDATION).build();
+        COPPER_ORE = builder("copper_ore").health(4).image(ICOPPER_ORE).build();
+        SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).image(ISEDIMENTARY_ROCK).build();
+        IGNEOUS_ROCK = builder("igneous_rock").health(3).image(IIGNEOUS_ROCK).build();
+        DIRT = builder("dirt").health(1).image(IDIRT).build();
+        LAVA = builder("lava").settleTicks(8).image(ILAVA).liquid().build();
+        DEBRIS = builder("debris").health(1).image(IDEBRIS).build();
+        CLAY = builder("clay").health(2).image(ICLAY).build();
+        SILICATE = builder("silicate").health(3).image(ISILICATE).build();
+        NICKEL = builder("nickel").health(4).image(INICKEL).build();
+        ASH = builder("ash").health(1).image(IASH).build();
+        GRAVEL = builder("gravel").health(1).image(IGRAVEL).build();
+        GOLD = builder("gold").health(4).image(IGOLD).build();
+        SAND = builder("sand").health(1).image(ISAND).build();
+        SANDSTONE = builder("sandstone").health(2).image(ISANDSTONE).build();
+        ICE = builder("ice").health(2).image(IICE).build();
+        OBSIDIAN = builder("obsidian").health(20).image(IOBSIDIAN).build();
+        WATER = builder("water").settleTicks(2).image(IWATER).liquid().build();
+        SULFUR = builder("sulfur").health(3).image(ISULFUR).build();
+        MERCURY = builder("mercury").health(4).image(IMERCURY).build();
 
         materials.close();
     }
@@ -58,7 +71,6 @@ public class Material implements TilePainter {
     private final Image image;
     private final MaterialType type;
     private final String key;
-    private final boolean rock;
     private final int health;
     private final int settleTicks;
     private final Function<Tile, TileBehavior> behaviorBuilder;
@@ -67,16 +79,11 @@ public class Material implements TilePainter {
         this.image = builder.image;
         this.type = builder.type;
         this.key = builder.key;
-        this.rock = builder.rock;
         this.health = builder.health;
         this.settleTicks = builder.settleTicks;
         this.behaviorBuilder = builder.behaviorBuilder;
 
         materials.put(key, this);
-    }
-
-    public boolean isRock() {
-        return rock;
     }
 
     public String getKey() {
@@ -135,17 +142,11 @@ public class Material implements TilePainter {
     private static class MaterialBuilder implements IBuilder<Material> {
 
         private String key = "empty";
-        private Image image = Images.foundation();
+        private Image image;
         private MaterialType type = MaterialType.SOLID;
-        private boolean rock = false;
         private int health = 1;
         private int settleTicks = -1;
         private Function<Tile, TileBehavior> behaviorBuilder = t -> TileBehavior.EMPTY;
-
-        public MaterialBuilder rock() {
-            this.rock = true;
-            return this;
-        }
 
         public MaterialBuilder image(Image image) {
             this.image = image;

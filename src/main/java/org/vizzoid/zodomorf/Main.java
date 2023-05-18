@@ -2,9 +2,8 @@ package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.zodomorf.engine.PlanetEngine;
-import org.vizzoid.zodomorf.generation.NormalPlanetGenerator;
 import org.vizzoid.zodomorf.generation.OpenSimplex2S;
-import org.vizzoid.zodomorf.generation.PlanetTileSet;
+import org.vizzoid.zodomorf.generation.VolcanoPlanetGenerator;
 import org.vizzoid.zodomorf.tile.Tile;
 
 import java.awt.*;
@@ -23,7 +22,7 @@ public class Main {
             Planet planet = new Planet();
             game.getPlanets().add(planet);
 
-            new NormalPlanetGenerator(new PlanetTileSet()).generate(planet);
+            new VolcanoPlanetGenerator().generate(planet);
             planet.setAvatar(game.getAvatar());
             Latice<Tile> latice = planet.getTileLatice();
             int height = latice.getHeight();

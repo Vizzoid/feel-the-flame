@@ -1,6 +1,7 @@
 package org.vizzoid.zodomorf;
 
 import org.vizzoid.zodomorf.tile.BoundaryTile;
+import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 
 import java.io.IOException;
@@ -58,7 +59,14 @@ public class Planet implements Serializable {
     private final Random random = new Random();
 
     public Planet() {
-        this.latice.setDefaultValue(new Tile(this, 0, 0));
+        latice.setDefaultValue(Tile.EMPTY);
+        int width = latice.getWidth();
+        int height = latice.getHeight();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                latice.set(x, y, new Tile(this, Material.EMPTY, x, y));
+            }
+        }
     }
 
     public void setAvatar(Avatar avatar) {
