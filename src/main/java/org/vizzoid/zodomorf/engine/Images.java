@@ -13,8 +13,11 @@ import java.net.URL;
 
 public class Images {
 
-    public static final Image IPLAYER, IFOUNDATION, ICOPPER_ORE, ISEDIMENTARY_ROCK, IIGNEOUS_ROCK, IDIRT, ILAVA, ISHADOW,
-            IDEBRIS, ICLAY, ISILICATE, INICKEL, IASH, IGRAVEL, IGOLD, ISAND, ISANDSTONE, IICE, IOBSIDIAN, IWATER, ISULFUR, IMERCURY;
+    public static final Image IPLAYER, IFOUNDATION, ICOPPER_ORE,
+        ISEDIMENTARY_ROCK, IIGNEOUS_ROCK, IDIRT, ILAVA, ISHADOW, 
+        IDEBRIS, ICLAY, ISILICATE, INICKEL, IASH, IGRAVEL, IGOLD, 
+        ISAND, ISANDSTONE, IICE, IOBSIDIAN, IWATER, ISULFUR, 
+        IMERCURY, ICORAL, ILIMESTONE;
 
     public static final int TILE_SIZE = 3;
 
@@ -41,6 +44,8 @@ public class Images {
         IWATER = ofColor(Color.BLUE);
         ISULFUR = ofColor(new Color(243, 222, 56));
         IMERCURY = ofColor(new Color(219,206,202));
+        ICORAL = ofColor(new Color(248, 131, 121));
+        ILIMESTONE = ofColor(new Color(190, 189, 143));
     }
 
     private Images() {

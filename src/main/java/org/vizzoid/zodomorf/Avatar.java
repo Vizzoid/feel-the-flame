@@ -237,7 +237,7 @@ public class Avatar implements LaticeCamera, Serializable {
                     miningTileHealth = clickTile.getHealth();
                     miningTile = clickTile;
                 }
-                else if (--miningTileHealth < 1) {
+                else if ((miningTileHealth -= ticks) < 1) {
                     String material = clickTile.getMaterial().getKey();
                     int count = storage.computeIfAbsent(material, m -> 0);
                     storage.put(material, count + 1);

@@ -15,8 +15,10 @@ public class Material implements TilePainter {
 
     private static final PresetMap<Material> materials = new PresetMap<>();
 
-    public static final Material
-            EMPTY, OXYGEN, FOUNDATION, COPPER_ORE, SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA, DEBRIS, CLAY, SILICATE, NICKEL, ASH, GRAVEL, GOLD, SAND, SANDSTONE, ICE, OBSIDIAN, WATER, SULFUR, MERCURY;
+    public static final Material EMPTY, OXYGEN, FOUNDATION, COPPER_ORE, 
+        SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA, DEBRIS, CLAY, SILICATE, 
+        NICKEL, ASH, GRAVEL, GOLD, SAND, SANDSTONE, ICE, OBSIDIAN, WATER, 
+        SULFUR, MERCURY, CORAL, LIMESTONE;
     private static final Color BACKGROUND_SHADE = new Color(0, 0, 0, 140);
 
     static {
@@ -47,6 +49,8 @@ public class Material implements TilePainter {
         WATER = builder("water").settleTicks(2).image(IWATER).liquid().build();
         SULFUR = builder("sulfur").health(3).image(ISULFUR).build();
         MERCURY = builder("mercury").health(4).image(IMERCURY).build();
+        CORAL = builder("coral").health(1).image(ICORAL).build();
+        LIMESTONE = builder("limestone").health(2).image(ILIMESTONE).build();
 
         materials.close();
     }
