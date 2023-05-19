@@ -71,7 +71,6 @@ public class Planet implements Serializable {
 
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
-        avatar.setPlanet(this);
     }
 
     public int getDay() {
@@ -110,8 +109,6 @@ public class Planet implements Serializable {
     }
 
     public void tick(long ticks) {
-        avatar.tick(ticks);
-
         if ((time += ticks) > 30000) {
             time = 0;
             day++;

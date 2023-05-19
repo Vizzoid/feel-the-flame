@@ -44,7 +44,7 @@ public class LivingCoral implements TileBehavior {
             
             Tile into = planet.getTileLatice().get(x, y);
             
-            if (into.isLiquid()) {
+            if (into.getMaterial() == Material.WATER) {
                 into.setMaterial(tile.getMaterial());
             }
             
@@ -75,7 +75,7 @@ public class LivingCoral implements TileBehavior {
             
             Tile into = planet.getTileLatice().get(x, y);
             
-            if (into.isLiquid()) {
+            if (into.getMaterial() == Material.WATER) {
                 into.setMaterial(Material.LIMESTONE);
             }
         }

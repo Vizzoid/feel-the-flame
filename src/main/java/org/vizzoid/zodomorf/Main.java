@@ -4,7 +4,6 @@ import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.zodomorf.engine.PlanetEngine;
 import org.vizzoid.zodomorf.generation.OpenSimplex2S;
 import org.vizzoid.zodomorf.generation.VolcanoPlanetGenerator;
-import org.vizzoid.zodomorf.tile.Tile;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -19,20 +18,9 @@ public class Main {
 
         if (!visual) {
             Game game = new Game();
-            Planet planet = new Planet();
-            game.getPlanets().add(planet);
-
-            new VolcanoPlanetGenerator().generate(planet);
-            planet.setAvatar(game.getAvatar());
-            Latice<Tile> latice = planet.getTileLatice();
-            int height = latice.getHeight();
-            int x = (int) (latice.getWidth() * 0.5);
-            int y = height - 2;
-            for (; y >= 0; y--) {
-                if (latice.get(x, y).isSolid()) break;
-            }
-            game.getAvatar().getPos().set(x, y + 1);
-            PlanetEngine.start(planet);
+            Planet planet = game.generatePlanet(new VolcanoPlanetGenerator());
+            game.setPlanet(planet);
+            PlanetEngine.start(game);
 
             /*FileOutputStream fileOutputStream
                     = new FileOutputStream("planet.txt");

@@ -2,6 +2,7 @@ package org.vizzoid.zodomorf.engine;
 
 import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.utils.engine.Sleeper;
+import org.vizzoid.zodomorf.Game;
 import org.vizzoid.zodomorf.Planet;
 
 import javax.swing.*;
@@ -15,13 +16,13 @@ public class PlanetEngine implements InputPainter {
 
     private static PlanetEngine instance;
 
-    protected final Planet planet;
+    protected final Game game;
     protected final DefaultEngine engine;
     private InputPainter painter;
     private final Sleeper tickSleeper = new Sleeper();
 
-    public PlanetEngine(Planet planet) {
-        this.planet = planet;
+    public PlanetEngine(Game game) {
+        this.game = game;
         this.engine = new DefaultEngine() {
             @Override
             protected void prepare() {
@@ -57,20 +58,20 @@ public class PlanetEngine implements InputPainter {
     }
 
     public PlanetPainter newMazePainter() {
-        return new PlanetPainter(planet, engine);
+        return new PlanetPainter(game.getAvatar().getPlanet(), engine);
     }
 
-    public static void start(Planet planet) {
+    public static void start(Game game) {
         if (instance != null) return;
 
-        instance = new PlanetEngine(planet);
+        instance = new PlanetEngine(game);
     }
 
     public void tick(long missedTime) {
-        planet.tick(1);
+        game.tick(missedTime);
 
         if (painter instanceof GameOverPainter) return;
-        if (planet.getAvatar().isDead()) {
+        if (game.getAvatar().isDead()) {
             setPainter(new GameOverPainter());
         }
     }

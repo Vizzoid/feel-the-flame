@@ -34,6 +34,7 @@ public class Avatar implements LaticeCamera, Serializable {
     private transient boolean clicking = false;
     private final Map<String, Integer> storage = new HashMap<>();
     private Tile clickTile = Tile.EMPTY;
+    private boolean onGround = true;
 
     @Serial
     private void writeObject(ObjectOutputStream oos)
@@ -160,8 +161,28 @@ public class Avatar implements LaticeCamera, Serializable {
         Latice<Tile> latice = planet.getTileLatice();
         MoveablePoint velocity = getVelocity();
         MoveablePoint pos = getPos();
-        boolean onGround = isOnGround();
-        if (!onGround) velocity.moveY(GRAVITY);
+        
+        if (!(movingLeft && movingRight)) {
+            if (movingLeft) {
+                velocity.moveX((onGround ? -1.5 : -1) * ticks);
+            }
+            if (movingRight) {
+                velocity.moveX((onGround ? 1.5 : 1) * ticks);
+            }
+        }
+        // potential bugs: if jumping into block may faze through as collision is not tested (Will not work before collision with current system because gravity is removed with collision
+        if (jumping && velocity.getY() == 0) {
+            velocity.setY(0.5);
+        }
+        velocity.moveY(GRAVITY * ticks);
+
+        // friction
+		if (onGround) {
+			velocity.moveX(-3 * velocity.getX() * ticks);
+			if (Math.abs(velocity.getX()) < 0.01f) {
+				velocity.setX(0);
+            }
+		}
 
         // we don't want velocity too fast that it cannot collide with tiles or lag the game
         // we also don't want to limit it to length as it means you can prevent your fall by moving left and right
@@ -177,26 +198,9 @@ public class Avatar implements LaticeCamera, Serializable {
         if (velocity.getY() < -MAX_VELOCITY) {
             velocity.setY(-MAX_VELOCITY);
         }
-        if (Math.abs(velocity.getX()) < HORIZONTAL_SPEED) {
-            if (!(movingLeft && movingRight)) {
-                if (movingLeft) {
-                    velocity.setX(-HORIZONTAL_SPEED);
-                    if (isBlockedLeft()) {
-                        velocity.setX(0);
-                    }
-                }
-                if (movingRight) {
-                    velocity.setX(HORIZONTAL_SPEED);
-                    if (isBlockedRight()) {
-                        velocity.setX(0);
-                    }
-                }
-            }
-        }
-        // potential bugs: if jumping into block may faze through as collision is not tested (Will not work before collision with current system because gravity is removed with collision
-        if (jumping && onGround) {
-            velocity.setY(0.5);
-        }
+
+        hitbox.move(ticks);
+
         {
             int tileX = getTileX();
             int tileY = getTileY();
@@ -212,10 +216,6 @@ public class Avatar implements LaticeCamera, Serializable {
                     hitbox.resolve(new Rectangle(new ImmoveablePoint(x, y), 1, 1));
                 }
             }
-        }
-        {
-            MoveablePoint effectiveVelocity = velocity.multiply(ticks);
-            pos.addSet(effectiveVelocity);
         }
 
         /*if (isOutside()) {
