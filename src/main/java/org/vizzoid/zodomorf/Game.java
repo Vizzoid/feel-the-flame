@@ -1,12 +1,13 @@
 package org.vizzoid.zodomorf;
 
+import org.vizzoid.zodomorf.engine.PlanetEngine;
+import org.vizzoid.zodomorf.generation.PlanetGenerator;
+import org.vizzoid.zodomorf.tile.Tile;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.vizzoid.zodomorf.generation.PlanetGenerator;
-import org.vizzoid.zodomorf.tile.Tile;
 
 public class Game implements Serializable {
 
@@ -51,6 +52,11 @@ public class Game implements Serializable {
             if (latice.get(x, y).isSolid()) break;
         }
         avatar.getPos().set(x, y + 1);
+
+        PlanetEngine engine = PlanetEngine.getInstance();
+        if (engine != null) {
+            engine.newPlanetPainter();
+        }
     }
 
     public void tick(long ticks) {

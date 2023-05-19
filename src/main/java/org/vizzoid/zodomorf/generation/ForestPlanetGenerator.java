@@ -92,7 +92,7 @@ public class ForestPlanetGenerator implements PlanetGenerator {
                 Material rock = set.crust();
 
                 double rockNoise = generation(rockSeed, x, y, ROCK_FREQUENCY());
-                if (rockNoise <= (-0.5 + (0.3 * (((double) y) / MAX_HEIGHT()))) && y < igneousHeights[x]) rock = set.mantle();
+                if (rockNoise <= -0.5 && y < igneousHeights[x]) rock = set.mantle();
 
                 if (y < IGNEOUS_HEIGHT()) {
                     double oreNoise = generation(oreSeed, x, y, ORE_FREQUENCY());

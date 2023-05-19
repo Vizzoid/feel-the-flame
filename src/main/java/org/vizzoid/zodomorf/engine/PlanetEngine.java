@@ -3,7 +3,6 @@ package org.vizzoid.zodomorf.engine;
 import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.utils.engine.Sleeper;
 import org.vizzoid.zodomorf.Game;
-import org.vizzoid.zodomorf.Planet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +33,7 @@ public class PlanetEngine implements InputPainter {
                 window.setVisible(true);
             }
         };
-        setPainter(newMazePainter());
+        newPlanetPainter();
         engine.addMouseListener(this);
         engine.addKeyListener(this);
         engine.addWheelListener(this);
@@ -57,14 +56,18 @@ public class PlanetEngine implements InputPainter {
         });
     }
 
-    public PlanetPainter newMazePainter() {
-        return new PlanetPainter(game.getAvatar().getPlanet(), engine);
+    public void newPlanetPainter() {
+        setPainter(new PlanetPainter(game.getAvatar().getPlanet(), engine));
     }
 
     public static void start(Game game) {
         if (instance != null) return;
 
         instance = new PlanetEngine(game);
+    }
+
+    public static PlanetEngine getInstance() {
+        return instance;
     }
 
     public void tick(long missedTime) {

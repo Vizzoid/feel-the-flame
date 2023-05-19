@@ -219,4 +219,7 @@ public class Tile implements TilePainter, Serializable {
         return behavior;
     }
 
+    public void setBehavior(TileBehavior behavior) {
+        this.behavior = behavior;
+    }
 }

@@ -84,17 +84,16 @@ public interface PlanetGenerator {
 
         int width = latice.getWidth();
         for (int x = 0; x < width; x++) {
-            int heightX = heights[x];
-            heights[x] = heightX;
+            int heightY = heights[x];
 
-            int dirtHeight = heightX - DIRT_DEPTH();
-            for (int y = dirtHeight; y < heightX; y++) {
+            int dirtHeight = heightY - DIRT_DEPTH();
+            for (int y = dirtHeight; y < heightY; y++) {
                 latice.set(x, y, new Tile(planet, set.dirt(), x, y));
             }
             for (int y = 0; y < dirtHeight; y++) {
                 latice.set(x, y, new Tile(planet, set.crust(), x, y));
             }
-            for (int y = heightX; y <= SEA_LEVEL(); y++) {
+            for (int y = heightY; y <= SEA_LEVEL(); y++) {
                 latice.set(x, y, new Tile(planet, set.sea(), x, y));
             }
         }
@@ -191,7 +190,7 @@ public interface PlanetGenerator {
         Latice<Tile> latice = planet.getTileLatice();
         for (int i = 0; i < 1000; i++) { // "settle" the liquids (please find something that works better)
             for (Tile tile : latice) {
-                if (!tile.isLiquid()) continue;
+                //if (!tile.isLiquid()) continue;
                 tile.tick(1);
             }
         }

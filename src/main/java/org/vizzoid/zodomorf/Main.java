@@ -2,8 +2,9 @@ package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.zodomorf.engine.PlanetEngine;
-import org.vizzoid.zodomorf.generation.OpenSimplex2S;
-import org.vizzoid.zodomorf.generation.VolcanoPlanetGenerator;
+import org.vizzoid.zodomorf.generation.*;
+import org.vizzoid.zodomorf.tile.LivingCoral;
+import org.vizzoid.zodomorf.tile.Tile;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,15 +13,74 @@ import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+    public static class Growth extends LivingCoral {
+
+        public Growth(Tile tile) {
+            super(tile);
+        }
+        @Override
+        protected int minGrowth() {
+            return 1;
+        }
+
+        @Override
+        protected int maxGrowth() {
+            return 2;
+        }
+
+        @Override
+        protected int minLime() {
+            return 20;
+        }
+
+        @Override
+        protected int maxLime() {
+            return 40;
+        }
+
+        @Override
+        public boolean canGrow(Tile into) {
+            return into.getMaterial() != tile.getMaterial();
+        }
+
+        @Override
+        public void convert(Tile into) {
+            into.setMaterial(tile.getMaterial(), false);
+            into.setBehavior(new Growth(into));
+        }
+    }
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         boolean visual = false;
 
         if (!visual) {
             Game game = new Game();
-            Planet planet = game.generatePlanet(new VolcanoPlanetGenerator());
-            game.setPlanet(planet);
+            Planet barren = game.generatePlanet(new BarrenPlanetGenerator());
+            Planet land = game.generatePlanet(new LandPlanetGenerator());
+            Planet forest = game.generatePlanet(new ForestPlanetGenerator());
+            Planet desert = game.generatePlanet(new DesertPlanetGenerator());
+            Planet ocean = game.generatePlanet(new OceanPlanetGenerator());
+            Planet volcano = game.generatePlanet(new VolcanoPlanetGenerator());
+            game.setPlanet(ocean);
             PlanetEngine.start(game);
+
+            /*Thread.sleep(10000);
+            game.setPlanet(land);
+
+            Thread.sleep(10000);
+            game.setPlanet(forest);
+
+            Thread.sleep(10000);
+            game.setPlanet(desert);
+
+            Thread.sleep(10000);
+            game.setPlanet(ocean);
+
+            Thread.sleep(10000);
+            game.setPlanet(volcano);*/
+
 
             /*FileOutputStream fileOutputStream
                     = new FileOutputStream("planet.txt");

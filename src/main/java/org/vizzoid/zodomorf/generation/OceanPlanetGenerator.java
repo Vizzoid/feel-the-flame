@@ -29,6 +29,16 @@ public class OceanPlanetGenerator implements PlanetGenerator {
     }
 
     @Override
+    public int MIN_HEIGHT() {
+        return 10;
+    }
+
+    @Override
+    public int MAX_HEIGHT() {
+        return 30;
+    }
+
+    @Override
     public int[] heightMap(Planet planet) {
         Latice<Tile> latice = planet.getTileLatice();
 
@@ -40,10 +50,61 @@ public class OceanPlanetGenerator implements PlanetGenerator {
         for (int x = 0; x < width; x++) {
             double heightVariationNoise = heightMap(heightVariationSeed, x, HEIGHT_VARIATION_FREQUENCY(), MIN_VARIATION_HEIGHT(), MAX_VARIATION_HEIGHT());
 
-            int heightX = (int) (MAX_HEIGHT() +
+            int heightX = (int) (PlanetGenerator.super.MAX_HEIGHT() +
                     heightVariationNoise);
             heights[x] = heightX;
         }
         return heights;
+    }
+
+    @Override
+    public void populateCaves(Planet planet, PlanetTileSet set, int[] caveHeights, int[] igneousHeights) {
+        Latice<Tile> latice = planet.getTileLatice();
+
+        int width = latice.getWidth();
+        Random r = planet.getRandom();
+
+        long caveSeed = r.nextLong();
+        long oreSeed = r.nextLong();
+        long rockSeed = r.nextLong();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0, caveLevel = caveHeights[x]; y < caveLevel; y++) {
+                Tile tile = latice.get(x, y);
+
+                Material rock = set.crust();
+
+                double rockNoise = generation(rockSeed, x, y, ROCK_FREQUENCY());
+                if (rockNoise <= 0 && y < igneousHeights[x]) rock = set.mantle();
+
+                double oreNoise = generation(oreSeed, x, y, ORE_FREQUENCY());
+                if (oreNoise > 0.55) rock = set.metal();
+
+                double noise = generation(caveSeed, x, y, CAVE_FREQUENCY());
+                if (noise > 0.1) {
+                    if (noise > (0.8 - (((PlanetGenerator.super.MAX_HEIGHT() - (double) y) * 0.2) / PlanetGenerator.super.MAX_HEIGHT()))) tile.setMaterial(set.sea());
+                    else tile.setMaterial(set.caveAir());
+                    tile.setBackground(rock);
+                }
+                else tile.setMaterial(rock);
+            }
+        }
+
+        int[] sand = PlanetGenerator.super.heightMap(planet);
+
+        long coralSeed = planet.getRandom().nextLong();
+        for (int x = 0; x < width; x++) {
+            int heightY = sand[x];
+
+            for (int y = 0; y < heightY; y++) {
+                latice.get(x, y).setMaterial(Material.SAND);
+            }
+
+            double noise = heightMap(coralSeed, x, 2);
+            if (noise > 0.6) {
+                Tile tile = latice.get(x, heightY);
+                tile.setMaterial(Material.CORAL);
+            }
+        }
     }
 }

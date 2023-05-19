@@ -1,12 +1,13 @@
 package org.vizzoid.zodomorf.tile;
 
-import java.util.Random;
-
+import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
+
+import java.util.Random;
 
 public class LivingCoral implements TileBehavior {
 
-    private Tile tile;
+    protected Tile tile;
     private int ticksUntilGrowth = 0;
     private int ticksUntilLime = 0;
 
@@ -16,14 +17,30 @@ public class LivingCoral implements TileBehavior {
         resetLime();
     }
 
-    private void resetGrowth() {
+    public void resetGrowth() {
         Planet planet = tile.getPlanet();
-        ticksUntilGrowth = planet.getRandom().nextInt(3600, 13200); 
+        ticksUntilGrowth = planet.getRandom().nextInt(minGrowth(), maxGrowth());
     }
 
-    private void resetLime() {
+    public void resetLime() {
         Planet planet = tile.getPlanet();
-        ticksUntilLime = planet.getRandom().nextInt(1200, 6000); 
+        ticksUntilLime = planet.getRandom().nextInt(minLime(), maxLime());
+    }
+
+    protected int minGrowth() {
+        return 3600;
+    }
+
+    protected int maxGrowth() {
+        return 13200;
+    }
+
+    protected int minLime() {
+        return 1200;
+    }
+
+    protected int maxLime() {
+        return 6000;
     }
 
     @Override
@@ -33,25 +50,45 @@ public class LivingCoral implements TileBehavior {
 
     @Override
     public void tick(long ticks) {
+        tickGrowth(ticks);
+        tickLime(ticks);
+    }
+
+    public void tickGrowth(long ticks) {
+        Planet planet = tile.getPlanet();
+        Latice<Tile> latice = planet.getTileLatice();
+        int tileX = tile.getX();
+        int tileY = tile.getY();
+        {
+            int coral = 0;
+            for (int x = tileX - 1; x <= tileX + 1; x++) {
+                for (int y = tileY - 1; y <= tileY + 1; y++) {
+                    if (latice.get(x, y).getMaterial() == Material.CORAL) {
+                        if (++coral >= 4) return;
+                    }
+                }
+            }
+        }
+
         if ((ticksUntilGrowth -= ticks) < 0) {
             resetGrowth();
-            
-            Planet planet = tile.getPlanet();
+
             Random r = planet.getRandom();
-            boolean left = r.nextBoolean();
-            int x = (left ? -1 : 1) + tile.getX();
-            int y = (r.nextInt(2)) + tile.getY();
-            
-            Tile into = planet.getTileLatice().get(x, y);
-            
-            if (into.getMaterial() == Material.WATER) {
-                into.setMaterial(tile.getMaterial());
+            int x = r.nextInt(3) + tileX - 1;
+
+            Tile into = latice.get(x, tileY + 1);
+
+            if (canGrow(into)) {
+                convert(into);
             }
-            
+
         }
+    }
+
+    public void tickLime(long ticks) {
         if ((ticksUntilLime -= ticks) < 0) {
             resetLime();
-            
+
             Planet planet = tile.getPlanet();
             Random r = planet.getRandom();
             int direction = r.nextInt(4);
@@ -59,26 +96,26 @@ public class LivingCoral implements TileBehavior {
             int y = tile.getY();
 
             switch (direction) {
-                case 0 -> {
-                    x++;
-                }
-                case 1 -> {
-                    x--;
-                }
-                case 2 -> {
-                    y++;
-                }
-                case 3 -> {
-                    y--;
-                }
+                case 0 -> x++;
+                case 1 -> x--;
+                case 2 -> y++;
+                case 3 -> y--;
             }
-            
+
             Tile into = planet.getTileLatice().get(x, y);
-            
-            if (into.getMaterial() == Material.WATER) {
+
+            if (canGrow(into)) {
                 into.setMaterial(Material.LIMESTONE);
             }
         }
+    }
+
+    public void convert(Tile into) {
+        into.setMaterial(tile.getMaterial());
+    }
+
+    public boolean canGrow(Tile into) {
+        return into.getMaterial() == Material.WATER || into.getMaterial() == Material.LIMESTONE || into.getMaterial() == Material.ICE;
     }
 
     @Override
