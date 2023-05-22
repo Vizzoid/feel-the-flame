@@ -17,7 +17,7 @@ public class Images {
         ISEDIMENTARY_ROCK, IIGNEOUS_ROCK, IDIRT, ILAVA, ISHADOW, 
         IDEBRIS, ICLAY, ISILICATE, INICKEL, IASH, IGRAVEL, IGOLD, 
         ISAND, ISANDSTONE, IICE, IOBSIDIAN, IWATER, ISULFUR, 
-        IMERCURY, ICORAL, ILIMESTONE;
+        IMERCURY, ICORAL, ILIMESTONE, IMETEOR, ITREE, IEMPTY;
 
     public static final int TILE_SIZE = 3;
 
@@ -28,7 +28,7 @@ public class Images {
         ISEDIMENTARY_ROCK = ofColor(Color.GRAY);
         IIGNEOUS_ROCK = ofColor(Color.DARK_GRAY);
         IDIRT = ofColor(new Color(98, 68, 51));
-        ILAVA = ofColor(Color.ORANGE);
+        ILAVA = ofColor(new Color(255, 200, 0, 255));
         ISHADOW = ofColor(Color.BLACK);
         IDEBRIS = ofColor(Color.GRAY);
         ICLAY = ofColor(new Color(138, 124, 85));
@@ -41,19 +41,18 @@ public class Images {
         ISANDSTONE = ofColor(new Color(213,194,165));
         IICE = ofColor(Color.CYAN);
         IOBSIDIAN = ofColor(new Color(113,98,122));
-        IWATER = ofColor(Color.BLUE);
+        IWATER = ofColor(new Color(0, 0, 255, 255));
         ISULFUR = ofColor(new Color(243, 222, 56));
         IMERCURY = ofColor(new Color(219,206,202));
         ICORAL = ofColor(new Color(248, 131, 121));
         ILIMESTONE = ofColor(new Color(190, 189, 143));
+        IMETEOR = ofColor(new Color(98, 68, 51));
+        ITREE = ofColor(new Color(133, 94, 66));
+        IEMPTY = ofColor(new Color(0, 0, 0, 0));
     }
 
     private Images() {
 
-    }
-
-    public static Image player() {
-        return IPLAYER;
     }
 
     public static String getJarPath() {

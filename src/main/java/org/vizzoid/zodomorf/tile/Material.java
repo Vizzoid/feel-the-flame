@@ -15,20 +15,14 @@ public class Material implements TilePainter {
 
     private static final PresetMap<Material> materials = new PresetMap<>();
 
-    public static final Material EMPTY, OXYGEN, FOUNDATION, COPPER_ORE, 
+    public static final Material EMPTY, FOUNDATION, COPPER_ORE,
         SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA, DEBRIS, CLAY, SILICATE, 
         NICKEL, ASH, GRAVEL, GOLD, SAND, SANDSTONE, ICE, OBSIDIAN, WATER, 
-        SULFUR, MERCURY, CORAL, LIMESTONE;
+        SULFUR, MERCURY, CORAL, LIMESTONE, TREE, COMPOSITE, BUILDING;
     private static final Color BACKGROUND_SHADE = new Color(0, 0, 0, 140);
 
     static {
-        EMPTY = new Material(builder("empty").gas()) {
-            @Override
-            public void paint(TileInfo info) {
-
-            }
-        };
-        OXYGEN = builder("oxygen").gas().build();
+        EMPTY = builder("empty").gas().image(IEMPTY).build();
         FOUNDATION = builder("foundation").health(10).image(IFOUNDATION).build();
         COPPER_ORE = builder("copper_ore").health(4).image(ICOPPER_ORE).build();
         SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).image(ISEDIMENTARY_ROCK).build();
@@ -49,8 +43,11 @@ public class Material implements TilePainter {
         WATER = builder("water").settleTicks(2).image(IWATER).liquid().build();
         SULFUR = builder("sulfur").health(3).image(ISULFUR).build();
         MERCURY = builder("mercury").health(4).image(IMERCURY).build();
-        CORAL = builder("coral").health(1).image(ICORAL).build();
+        CORAL = builder("coral").behaviorBuilder(LivingCoral::new).health(5).image(ICORAL).build();
         LIMESTONE = builder("limestone").health(2).image(ILIMESTONE).build();
+        TREE = builder("lumber").behaviorBuilder(TreeTile::new).health(5).image(ITREE).build();
+        COMPOSITE = builder("composite").health(Integer.MAX_VALUE).image(IFOUNDATION).build();
+        BUILDING = builder("building").health(100).image(IFOUNDATION).build();
 
         materials.close();
     }
@@ -68,8 +65,16 @@ public class Material implements TilePainter {
         return materials.values();
     }
 
+    public static Material[] array() {
+        return materials.array(new Material[materials.values().size()]);
+    }
+
     public static Material fromKey(String name) {
         return materials.get(name);
+    }
+
+    public static Material fromIndex(int index) {
+        return materials.get(index);
     }
 
     private final Image image;

@@ -1,5 +1,6 @@
 package org.vizzoid.zodomorf.tile;
 
+import org.vizzoid.utils.Optional;
 import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
@@ -39,21 +40,40 @@ public class Tile implements TilePainter, Serializable {
         public void swap(Tile tile) {
 
         }
+
+        @Override
+        public void updateNeighbors() {
+
+        }
+
+        @Override
+        public void update() {
+
+        }
+
+        @Override
+        public boolean canMoveInto() {
+            return true;
+        }
     };
+    private static final Color TILE_BREAKING = new Color(255, 255, 255, 118);
 
     protected transient Planet planet;
     protected double temperature;
     protected final int x;
     protected final int y;
     protected transient Material background = Material.EMPTY;
+    protected transient Material middleGround = Material.EMPTY;
     protected transient Material material = Material.EMPTY;
     protected transient TileBehavior behavior = TileBehavior.EMPTY;
+    protected transient TileBehavior middleGroundBehavior = TileBehavior.EMPTY;
 
     @Serial
     private void writeObject(ObjectOutputStream oos)
       throws IOException {
         oos.defaultWriteObject();
         oos.writeUTF(background.getKey());
+        oos.writeUTF(middleGround.getKey());
         oos.writeUTF(material.getKey());
     }
 
@@ -62,6 +82,7 @@ public class Tile implements TilePainter, Serializable {
       throws ClassNotFoundException, IOException {
         ois.defaultReadObject();
         background = Material.fromKey(ois.readUTF());
+        middleGround = Material.fromKey(ois.readUTF());
         material = Material.fromKey(ois.readUTF());
         behavior = material.buildBehavior(this);
     }
@@ -102,6 +123,10 @@ public class Tile implements TilePainter, Serializable {
         return this.background;
     }
 
+    public Material getMiddleGround() {
+        return middleGround;
+    }
+
     public Material getMaterial() {
         return this.material;
     }
@@ -110,13 +135,26 @@ public class Tile implements TilePainter, Serializable {
         this.background = background;
     }
 
+    public void setMiddleGround(Material middleGround) {
+        setMiddleGround(middleGround, true);
+    }
+
+    public void setMiddleGround(Material middleGround, boolean updateBehavior) {
+        this.middleGround = middleGround;
+        if (updateBehavior) middleGroundBehavior = middleGround.buildBehavior(this);
+    }
+
     public void setMaterial(Material material) {
         setMaterial(material, true);
     }
 
     public void setMaterial(Material material, boolean updateBehavior) {
+        setMaterial(material, updateBehavior, true);
+    }
+
+    public void setMaterial(Material material, boolean updateBehavior, boolean updateBackground) {
         this.material = material;
-        if (material.isSolid()) setBackground(material);
+        if (updateBackground && material.isSolid()) setBackground(material);
         if (updateBehavior) behavior = material.buildBehavior(this);
         updateNeighbors();
     }
@@ -132,6 +170,15 @@ public class Tile implements TilePainter, Serializable {
         planet.transitionTemperature(latice.get(x, y - 1), this);
 
         behavior.tick(ticks);
+        middleGroundBehavior.tick(ticks);
+    }
+
+    public TileBehavior getMiddleGroundBehavior() {
+        return middleGroundBehavior;
+    }
+
+    public void setMiddleGroundBehavior(TileBehavior middleGroundBehavior) {
+        this.middleGroundBehavior = middleGroundBehavior;
     }
 
     public boolean isLiquid() {
@@ -163,7 +210,7 @@ public class Tile implements TilePainter, Serializable {
         behavior = tile.behavior;
         tile.behavior = behavior1;
 
-        behavior.setTile(tile);
+        behavior.setTile(this);
         tile.behavior.setTile(tile);
 
         double temperature1 = temperature;
@@ -175,17 +222,17 @@ public class Tile implements TilePainter, Serializable {
         return material.isSolid();
     }
 
-    private static final Color TILE_BREAKING = new Color(255, 255, 255, 118);
-
     @Override
     public void paint(TileInfo info) {
-        //background.paintBackground(info);
+        background.paintBackground(info);
         material.paint(info);
+        middleGround.paint(info);
 
         Avatar avatar = planet.getAvatar();
-        if (isSolid() && equals(avatar.getClickTile())) {
+        Material material = this.material.isSolid() ? this.material : middleGround;
+        if (material.isSolid() && equals(avatar.getClickTile())) {
             double miningTileHealth = avatar.getMiningTileHealth();
-            double health = getHealth();
+            double health = material.getHealth();
             info.graphics.setColor(TILE_BREAKING);
             int height = (int) (info.squareSize * ((health - miningTileHealth) / health));
             info.graphics.fillRect(info.screenX, info.screenY + (info.squareSize - height), info.squareSize, height);
@@ -222,4 +269,49 @@ public class Tile implements TilePainter, Serializable {
     public void setBehavior(TileBehavior behavior) {
         this.behavior = behavior;
     }
+
+    public boolean isBoundary() {
+        return false;
+    }
+
+    public Tile relative(int x, int y) {
+        return planet.getTileLatice().get(this.x + x, this.y + y);
+    }
+
+    public Tile above() {
+        return relative(0, 1);
+    }
+
+    public Tile below() {
+        return relative(0, -1);
+    }
+
+    public Tile left() {
+        return relative(-1, 0);
+    }
+
+    public Tile right() {
+        return relative(1, 0);
+    }
+
+    public Optional<Tile> freeAdjacent() {
+        {
+            Tile above = above();
+            if (!above.isSolid()) return Optional.of(above);
+        }
+        {
+            Tile right = right();
+            if (!right.isSolid()) return Optional.of(right);
+        }
+        {
+            Tile left = left();
+            if (!left.isSolid()) return Optional.of(left);
+        }
+        {
+            Tile below = below();
+            if (!below.isSolid()) return Optional.of(below);
+        }
+        return Optional.empty();
+    }
+
 }

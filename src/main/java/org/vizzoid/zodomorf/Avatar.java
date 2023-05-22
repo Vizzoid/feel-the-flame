@@ -1,6 +1,7 @@
 package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.position.*;
+import org.vizzoid.zodomorf.engine.IntPoint;
 import org.vizzoid.zodomorf.engine.LaticeCamera;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
@@ -29,12 +30,13 @@ public class Avatar implements LaticeCamera, Serializable {
     private transient boolean jumping;
     private transient boolean movingLeft, movingRight;
     private transient int miningTileHealth;
-    private final MoveablePoint mouseTile = new MoveablePoint();
+    private final IntPoint mouseTile = new IntPoint();
     private Tile miningTile = Tile.EMPTY;
     private transient boolean clicking = false;
     private final Map<String, Integer> storage = new HashMap<>();
-    private Tile clickTile = Tile.EMPTY;
+    private transient Tile clickTile = Tile.EMPTY;
     private boolean onGround = true;
+    private transient Material miningMiddleGround = Material.EMPTY;
 
     @Serial
     private void writeObject(ObjectOutputStream oos)
@@ -248,22 +250,55 @@ public class Avatar implements LaticeCamera, Serializable {
         } else food -= ticks;
 
         if (clicking) {
-            clickTile = latice.get(pos.getX() + mouseTile.getX(), pos.getY() + mouseTile.getY());
+            System.out.println(1);
+            clickTile = latice.get(((int) pos.getX()) + mouseTile.getXInt(), ((int) pos.getY()) + mouseTile.getYInt());
             if (clickTile.isSolid()) {
+                System.out.println(2);
                 if (!clickTile.equals(miningTile)) {
+                    System.out.println(3);
                     miningTileHealth = clickTile.getHealth();
                     miningTile = clickTile;
                 }
-                else if ((miningTileHealth -= ticks) < 1) {
+                System.out.println(4);
+                if ((miningTileHealth -= ticks) < 1) {
+                    System.out.println(5);
                     String material = clickTile.getMaterial().getKey();
                     int count = storage.computeIfAbsent(material, m -> 0);
                     storage.put(material, count + 1);
 
                     clickTile.setMaterial(Material.EMPTY);
+                }
+            } else if (clickTile.getMiddleGround().isSolid()) {
+                System.out.println(6);
+                if (!clickTile.equals(miningTile) || !clickTile.getMiddleGround().equals(miningMiddleGround)) {
+                    System.out.println(7);
+                    miningTileHealth = clickTile.getMiddleGround().getHealth();
+                    miningTile = clickTile;
+                    miningMiddleGround = clickTile.getMiddleGround();
+                }
+                if ((miningTileHealth -= ticks) < 1) {
+                    System.out.println(8);
+                    String material = clickTile.getMiddleGround().getKey();
+                    int count = storage.computeIfAbsent(material, m -> 0);
+                    storage.put(material, count + 1);
+
+                    clickTile.setMiddleGround(Material.EMPTY);
                     miningTile = Tile.EMPTY;
+                    miningMiddleGround = Material.EMPTY;
                 }
             }
         }
+    }
+
+    public int getStorage(Material material) {
+        return storage.getOrDefault(material.getKey(), 0);
+    }
+
+    public boolean spend(Material material, int amount) {
+        int storage = getStorage(material);
+        if (storage < amount) return false;
+        setStorage(material, storage - amount);
+        return true;
     }
 
     @Override
@@ -334,5 +369,9 @@ public class Avatar implements LaticeCamera, Serializable {
 
     public void setClicking(boolean clicking) {
         this.clicking = clicking;
+    }
+
+    public void setStorage(Material material, int i) {
+        storage.put(material.getKey(), i);
     }
 }

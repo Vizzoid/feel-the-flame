@@ -21,7 +21,12 @@ public class BoundaryTile extends Tile {
     }
 
     @Override
-    public void setMaterial(Material material) {
+    public void setMaterial(Material material, boolean updateBehavior, boolean updateBackground) {
+
+    }
+
+    @Override
+    public void setMiddleGround(Material middleGround, boolean updateBehavior) {
 
     }
 
@@ -53,5 +58,10 @@ public class BoundaryTile extends Tile {
     @Override
     public boolean canMoveInto() {
         return false;
+    }
+
+    @Override
+    public boolean isBoundary() {
+        return true;
     }
 }

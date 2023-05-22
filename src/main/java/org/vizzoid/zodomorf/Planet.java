@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Planet implements Serializable {
@@ -57,20 +59,27 @@ public class Planet implements Serializable {
     private final Latice<Tile> latice = new Latice<>(500, 250);
     private transient Avatar avatar;
     private final Random random = new Random();
+    private final List<Entity> entities = new ArrayList<>();
 
     public Planet() {
         latice.setDefaultValue(Tile.EMPTY);
-        int width = latice.getWidth();
-        int height = latice.getHeight();
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                latice.set(x, y, new Tile(this, Material.EMPTY, x, y));
-            }
-        }
+        latice.fill((x, y) -> new Tile(this, Material.EMPTY, x, y));
+    }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity);
     }
 
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
+        avatar.setPlanet(this);
+
+        int x = (int) (latice.getWidth() * 0.5);
+        avatar.getPos().set(x, getHighestY(x) + 1);
     }
 
     public int getDay() {
@@ -117,6 +126,9 @@ public class Planet implements Serializable {
         for (Tile tile : latice) {
             tile.tick(ticks);
         }
+        for (Entity entity : new ArrayList<>(entities)) {
+            entity.tick(ticks);
+        }
     }
 
     public void transitionTemperature(Tile targetTile, Tile currentTile) {
@@ -146,5 +158,53 @@ public class Planet implements Serializable {
 
     public Random getRandom() {
         return random;
+    }
+
+    public int randomX() {
+        return random.nextInt(latice.getWidth());
+    }
+
+    public int randomY() {
+        return random.nextInt(latice.getHeight());
+    }
+
+    public int getHighestY(int x) {
+        int height = latice.getHeight();
+        for (int y = height - 2; y >= 0; y--) {
+            if (latice.get(x, y).isSolid()) return y;
+        }
+        return 0;
+    }
+
+    public int getWidth() {
+        return latice.getWidth();
+    }
+
+    public int getHeight() {
+        return latice.getHeight();
+    }
+
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
+    }
+
+    public void place(Structure structure) {
+        place(structure, 0, 0);
+    }
+
+    public void place(Structure structure, int modX, int modY) {
+        Latice<Tile> structureLatice = structure.getLatice();
+        int width = structureLatice.getWidth();
+        int height = structureLatice.getHeight();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = structureLatice.get(x, y);
+                if (tile == null) continue;
+                Tile tile1 = latice.get(x + modX, y + modY);
+                tile1.setMaterial(tile.getMaterial());
+                tile1.setMiddleGround(tile.getMiddleGround());
+                tile1.setBackground(tile.getBackground());
+            }
+        }
     }
 }

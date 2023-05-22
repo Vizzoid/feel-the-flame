@@ -58,7 +58,9 @@ public class OceanPlanetGenerator implements PlanetGenerator {
     }
 
     @Override
-    public void populateCaves(Planet planet, PlanetTileSet set, int[] caveHeights, int[] igneousHeights) {
+    public void populateCaves(Planet planet, PlanetTileSet set, int[] heights) {
+        int[] caveHeights = caveHeights(heights, planet);
+        int[] igneousHeights = igneousHeights(planet);
         Latice<Tile> latice = planet.getTileLatice();
 
         int width = latice.getWidth();
@@ -91,20 +93,21 @@ public class OceanPlanetGenerator implements PlanetGenerator {
         }
 
         int[] sand = PlanetGenerator.super.heightMap(planet);
-
-        long coralSeed = planet.getRandom().nextLong();
         for (int x = 0; x < width; x++) {
             int heightY = sand[x];
 
             for (int y = 0; y < heightY; y++) {
                 latice.get(x, y).setMaterial(Material.SAND);
             }
+        }
 
-            double noise = heightMap(coralSeed, x, 2);
-            if (noise > 0.6) {
-                Tile tile = latice.get(x, heightY);
-                tile.setMaterial(Material.CORAL);
-            }
+        int coralSpace = width / 9;
+        int coralVariation = coralSpace / 2;
+
+        for (int x = 1; x < 9; x++) {
+            int coralX = (x * coralSpace) + (r.nextInt(coralSpace) - coralVariation);
+
+            latice.get(coralX, sand[coralX]).setMiddleGround(Material.CORAL);
         }
     }
 }

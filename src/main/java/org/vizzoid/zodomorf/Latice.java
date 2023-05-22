@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
 
 @SuppressWarnings("unchecked")
 public class Latice<T> implements Iterable<T>, Serializable {
@@ -49,6 +50,14 @@ public class Latice<T> implements Iterable<T>, Serializable {
 
     public void set(double x, double y, T t) {
         set((int) x, (int) y, t);
+    }
+
+    public void fill(BiFunction<Integer, Integer, T> t) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                set(x, y, t.apply(x, y));
+            }
+        }
     }
 
     public T get(int x, int y) {

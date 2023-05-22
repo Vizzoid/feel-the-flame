@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class ForestPlanetGenerator implements PlanetGenerator {
+
+    private static final double TREE_NOISE = 1;
+
     @Override
     public PlanetTileSet set() {
         return new PlanetTileSet().sea(Material.WATER).dirt(Material.ASH).crust(Material.DIRT).mantle(Material.GRAVEL).metal(Material.GOLD);
@@ -75,7 +78,9 @@ public class ForestPlanetGenerator implements PlanetGenerator {
     }
 
     @Override
-    public void populateCaves(Planet planet, PlanetTileSet set, int[] caveHeights, int[] igneousHeights) {
+    public void populateCaves(Planet planet, PlanetTileSet set, int[] heights) {
+        int[] caveHeights = caveHeights(heights, planet);
+        int[] igneousHeights = igneousHeights(planet);
         Latice<Tile> latice = planet.getTileLatice();
 
         int width = latice.getWidth();
@@ -84,6 +89,7 @@ public class ForestPlanetGenerator implements PlanetGenerator {
         long caveSeed = r.nextLong();
         long oreSeed = r.nextLong();
         long rockSeed = r.nextLong();
+        long treeSeed = r.nextLong();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0, caveLevel = caveHeights[x]; y < caveLevel; y++) {
@@ -101,12 +107,29 @@ public class ForestPlanetGenerator implements PlanetGenerator {
 
                 double noise = generation(caveSeed, x, y, CAVE_FREQUENCY());
                 if (noise > 0.1) {
-                    if (y < IGNEOUS_HEIGHT() &&
-                            (noise > (0.8 - (((MAX_HEIGHT() - (double) y) * 0.2) / MAX_HEIGHT())))) tile.setMaterial(set.sea());
-                    else tile.setMaterial(set.caveAir());
+                    if (y < IGNEOUS_HEIGHT()) {
+                        if (noise > (0.8 - (((MAX_HEIGHT() - (double) y) * 0.2) / MAX_HEIGHT()))) {
+                            tile.setMaterial(set.sea());
+                        } else tile.setMaterial(set.caveAir());
+
+                        double treeNoise = generation(treeSeed, x, y, TREE_NOISE);
+                        if (treeNoise > 0.8) tile.setMiddleGround(Material.TREE);
+                    } else {
+                        tile.setMaterial(set.caveAir());
+                    }
+
                     tile.setBackground(rock);
                 }
                 else tile.setMaterial(rock);
+            }
+
+            long burntTreeSeed = planet.getRandom().nextLong();
+            for (int y = heights[x], endY = y + r.nextInt(5, 20); y < endY; y++) {
+                double noise = heightMap(burntTreeSeed, x, 1);
+                if (noise > 0.6) {
+                    Tile tile = latice.get(x, y);
+                    tile.setMaterial(Material.ASH);
+                }
             }
         }
     }

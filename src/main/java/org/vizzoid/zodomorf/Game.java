@@ -1,8 +1,8 @@
 package org.vizzoid.zodomorf;
 
 import org.vizzoid.zodomorf.engine.PlanetEngine;
+import org.vizzoid.zodomorf.engine.StructurePainter;
 import org.vizzoid.zodomorf.generation.PlanetGenerator;
-import org.vizzoid.zodomorf.tile.Tile;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,6 +16,15 @@ public class Game implements Serializable {
 
     private final Avatar avatar;
     private final List<Planet> planets = new ArrayList<>();
+    private StructurePainter structureBuilder = null;
+
+    public StructurePainter getStructureBuilder() {
+        return structureBuilder;
+    }
+
+    public void setStructureBuilder(StructurePainter structureBuilder) {
+        this.structureBuilder = structureBuilder;
+    }
 
     public Game() {
         avatar = new Avatar();
@@ -42,16 +51,6 @@ public class Game implements Serializable {
 
     public void setPlanet(Planet planet) {
         planet.setAvatar(avatar);
-        avatar.setPlanet(planet);
-        
-        Latice<Tile> latice = planet.getTileLatice();
-        int height = latice.getHeight();
-        int x = (int) (latice.getWidth() * 0.5);
-        int y = height - 2;
-        for (; y >= 0; y--) {
-            if (latice.get(x, y).isSolid()) break;
-        }
-        avatar.getPos().set(x, y + 1);
 
         PlanetEngine engine = PlanetEngine.getInstance();
         if (engine != null) {
@@ -60,6 +59,11 @@ public class Game implements Serializable {
     }
 
     public void tick(long ticks) {
+        if (structureBuilder != null) {
+            structureBuilder.tick(ticks);
+            return;
+        }
+
         for (Planet planet : planets) {
             planet.tick(ticks);
         }

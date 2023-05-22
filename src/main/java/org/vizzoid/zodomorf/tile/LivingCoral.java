@@ -8,8 +8,8 @@ import java.util.Random;
 public class LivingCoral implements TileBehavior {
 
     protected Tile tile;
-    private int ticksUntilGrowth = 0;
-    private int ticksUntilLime = 0;
+    protected int ticksUntilGrowth = 0;
+    protected int ticksUntilLime = 0;
 
     public LivingCoral(Tile tile) {
         this.tile = tile;
@@ -63,7 +63,7 @@ public class LivingCoral implements TileBehavior {
             int coral = 0;
             for (int x = tileX - 1; x <= tileX + 1; x++) {
                 for (int y = tileY - 1; y <= tileY + 1; y++) {
-                    if (latice.get(x, y).getMaterial() == Material.CORAL) {
+                    if (latice.get(x, y).getMiddleGround() == tile.getMiddleGround()) {
                         if (++coral >= 4) return;
                     }
                 }
@@ -105,17 +105,21 @@ public class LivingCoral implements TileBehavior {
             Tile into = planet.getTileLatice().get(x, y);
 
             if (canGrow(into)) {
-                into.setMaterial(Material.LIMESTONE);
+                convertLime(into);
             }
         }
     }
 
     public void convert(Tile into) {
-        into.setMaterial(tile.getMaterial());
+        into.setMiddleGround(tile.getMiddleGround());
+    }
+
+    public void convertLime(Tile into) {
+        into.setMiddleGround(Material.LIMESTONE);
     }
 
     public boolean canGrow(Tile into) {
-        return into.getMaterial() == Material.WATER || into.getMaterial() == Material.LIMESTONE || into.getMaterial() == Material.ICE;
+        return into.getMaterial() == Material.WATER || into.getMiddleGround() == Material.LIMESTONE || into.getMaterial() == Material.ICE;
     }
 
     @Override

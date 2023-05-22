@@ -8,21 +8,24 @@ import java.awt.*;
 
 public class LaticePainter implements Painter {
 
-    private final int squaresHalfWidth;
-    private final int squaresHalfHeight;
-    private final Latice<? extends TilePainter> latice;
-    private final LaticeCamera camera;
+    protected final int squaresHalfWidth;
+    protected final int squaresHalfHeight;
+    protected final Latice<? extends TilePainter> latice;
+    protected LaticeCamera camera;
     protected final int squareSize;
     protected final TileInfo currentTile = new TileInfo();
     protected final IntPoint centerStart;
 
     public LaticePainter(DefaultEngine engine, Latice<? extends TilePainter> latice, LaticeCamera camera, int squareSize) {
+        this(engine.center, latice, camera, squareSize);
+    }
+
+    public LaticePainter(Dimension center, Latice<? extends TilePainter> latice, LaticeCamera camera, int squareSize) {
         this.latice = latice;
         this.camera = camera;
         this.squareSize = squareSize;
-        Dimension dimension = engine.getCenter();
-        double squaresWidthD = (dimension.width - (squareSize * 0.5)) / (double) squareSize;
-        double squaresHeightD = (dimension.height - (squareSize * 0.5)) / (double) squareSize;
+        double squaresWidthD = (center.width - (squareSize * 0.5)) / (double) squareSize;
+        double squaresHeightD = (center.height - (squareSize * 0.5)) / (double) squareSize;
         int squaresWidthI = (int) squaresWidthD;
         int squaresHeightI = (int) squaresHeightD;
 
@@ -31,8 +34,8 @@ public class LaticePainter implements Painter {
 
         int halfSquareSize = (int) (squareSize * 0.5);
         this.centerStart = new IntPoint(
-                engine.center.width - halfSquareSize,
-                engine.center.height - halfSquareSize);
+                center.width - halfSquareSize,
+                center.height - halfSquareSize);
     }
 
     @Override
@@ -62,7 +65,7 @@ public class LaticePainter implements Painter {
     }
 
     public double relativeY(int screenY) {
-        return ((screenY - centerStart.getYInt()) / (double) -squareSize) + 1;
+        return ((screenY - centerStart.getYInt()) / (double) -squareSize);
     }
 
     public double screenToX(int screenX) {
