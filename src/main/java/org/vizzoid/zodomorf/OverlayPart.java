@@ -1,8 +1,15 @@
+package org.vizzoid.zodomorf;
+
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 
-import org.w3c.dom.events.MouseEvent;
+import org.vizzoid.utils.position.Point;
+import org.vizzoid.utils.position.ImmoveablePoint;
+import org.vizzoid.utils.position.Rectangle;
+import java.awt.event.MouseEvent;
 
-public class OverlayPart {
+public abstract class OverlayPart {
     
     protected final Rectangle rectangle;
     protected boolean pressed = false;
@@ -16,23 +23,31 @@ public class OverlayPart {
     }
 
     public void tryPress(MouseEvent e) {
-        if (isPressed(e)) press();
+        if (isInside(e)) press();
     }
 
     public void tryRelease(MouseEvent e) {
-        if (isPressed(e)) release();
+        if (isInside(e)) release();
     }
 
     public void tryPress(KeyEvent e) {
         if (pressed) press(e);
     }
 
-    public boolean isPressed(MouseEvent e) {
+    public void tryRelease(KeyEvent e) {
+        if (pressed) release(e);
+    }
+
+    public boolean isInside(MouseEvent e) {
         return rectangle.intersects(new ImmoveablePoint(e.getX(), e.getY()));
     }
 
     public void press(KeyEvent e) {
         
+    }
+
+    public void release(KeyEvent e) {
+
     }
 
     public void press() {
@@ -41,6 +56,13 @@ public class OverlayPart {
 
     public void release() {
         pressed = false;
+    }
+
+    public abstract Image getImage();
+
+    public void paint(Graphics g) {
+        Point point = rectangle.getPos();
+        g.drawImage(getImage(), (int) point.getX(), (int) point.getY(), (int) rectangle.getWidth(), (int) rectangle.getHeight(), null);
     }
 
 }

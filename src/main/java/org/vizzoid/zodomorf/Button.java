@@ -1,8 +1,8 @@
 package org.vizzoid.zodomorf;
 
-import org.vizzoid.utils.position.ImmoveablePoint;
+import java.awt.Image;
+
 import org.vizzoid.utils.position.Rectangle;
-import java.awt.event.MouseEvent;
 
 public class Button extends OverlayPart {
 
@@ -21,6 +21,11 @@ public class Button extends OverlayPart {
     public void press() {
         if (!pressed) runnable.run();
         super.press();
+    }
+
+    @Override
+    public Image getImage() {
+        throw new UnsupportedOperationException("Unimplemented method 'getImage'");
     }
 
 }
