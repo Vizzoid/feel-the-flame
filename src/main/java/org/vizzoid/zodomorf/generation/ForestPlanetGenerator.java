@@ -133,4 +133,12 @@ public class ForestPlanetGenerator implements PlanetGenerator {
             }
         }
     }
+
+    @Override
+    public void generate(Planet planet) {
+        planet.setMinTemperature(-20);
+        planet.setMaxTemperature(90);
+        planet.resetTemperature();
+        PlanetGenerator.super.generate(planet);
+    }
 }

@@ -124,7 +124,9 @@ public interface PlanetGenerator {
     }
 
     default void populate(Planet planet, PlanetTileSet set) {
-        populateCaves(planet, set, surface(planet, set));
+        int[] heights = surface(planet, set);
+        populateCaves(planet, set, heights);
+        caveBackground(planet, set, heights);
     }
 
     default void populateCaves(Planet planet, PlanetTileSet set, int[] heights) {
@@ -200,6 +202,18 @@ public interface PlanetGenerator {
         populate(planet, set);
         boundary(planet);
         settle(planet);
+    }
+
+    default void caveBackground(Planet planet, PlanetTileSet set, int[] heights) {
+        Latice<Tile> latice = planet.getTileLatice();
+        Material material = set.caveBackground();
+        for (int x = 0; x < heights.length; x++) {
+            for (int y = 0; y < heights[x]; y++) {
+                Tile tile = latice.get(x, y);
+                if (tile.getBackground().isSolid()) continue;
+                tile.setBackground(material);
+            }
+        }
     }
 
 }

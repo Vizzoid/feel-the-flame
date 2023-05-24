@@ -83,11 +83,14 @@ public class VolcanoPlanetGenerator implements PlanetGenerator {
         for (Tile tile : latice) {
             if (tile.getBehavior() instanceof VolcanoVein) tile.setBehavior(TileBehavior.EMPTY);
         }
-
+        caveBackground(planet, set, heights);
     }
 
     @Override
     public void generate(Planet planet) {
+        planet.setMinTemperature(300);
+        planet.setMaxTemperature(700);
+        planet.resetTemperature();
         PlanetGenerator.super.generate(planet);
     }
 

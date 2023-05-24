@@ -68,5 +68,14 @@ public class BarrenPlanetGenerator implements PlanetGenerator {
                 tile.setMaterial(set.dirt());
             }
         }
+        caveBackground(planet, set, heights);
+    }
+
+    @Override
+    public void generate(Planet planet) {
+        planet.setMinTemperature(10);
+        planet.setMaxTemperature(210);
+        planet.resetTemperature();
+        PlanetGenerator.super.generate(planet);
     }
 }

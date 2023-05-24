@@ -18,34 +18,49 @@ public class Material implements TilePainter {
     public static final Material EMPTY, FOUNDATION, COPPER_ORE,
         SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA, DEBRIS, CLAY, SILICATE, 
         NICKEL, ASH, GRAVEL, GOLD, SAND, SANDSTONE, ICE, OBSIDIAN, WATER, 
-        SULFUR, MERCURY, CORAL, LIMESTONE, TREE, COMPOSITE, BUILDING;
+        SULFUR, MERCURY, CORAL, LIMESTONE, TREE, COMPOSITE, BUILDING,
+        STEEL, CLOTH, GLASS, PAPER, PLASTIC;
     private static final Color BACKGROUND_SHADE = new Color(0, 0, 0, 140);
 
     static {
         EMPTY = builder("empty").gas().image(IEMPTY).build();
-        FOUNDATION = builder("foundation").health(10).image(IFOUNDATION).build();
-        COPPER_ORE = builder("copper_ore").health(4).image(ICOPPER_ORE).build();
-        SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).image(ISEDIMENTARY_ROCK).build();
-        IGNEOUS_ROCK = builder("igneous_rock").health(3).image(IIGNEOUS_ROCK).build();
-        DIRT = builder("dirt").health(1).image(IDIRT).build();
-        LAVA = builder("lava").settleTicks(8).image(ILAVA).liquid().build();
+
         DEBRIS = builder("debris").health(1).image(IDEBRIS).build();
-        CLAY = builder("clay").health(2).image(ICLAY).build();
-        SILICATE = builder("silicate").health(3).image(ISILICATE).build();
-        NICKEL = builder("nickel").health(4).image(INICKEL).build();
+        DIRT = builder("dirt").health(1).image(IDIRT).build();
         ASH = builder("ash").health(1).image(IASH).build();
         GRAVEL = builder("gravel").health(1).image(IGRAVEL).build();
-        GOLD = builder("gold").health(4).image(IGOLD).build();
         SAND = builder("sand").health(1).image(ISAND).build();
+
+        LIMESTONE = builder("limestone").health(2).image(ILIMESTONE).build();
         SANDSTONE = builder("sandstone").health(2).image(ISANDSTONE).build();
         ICE = builder("ice").health(2).image(IICE).build();
-        OBSIDIAN = builder("obsidian").health(20).image(IOBSIDIAN).build();
-        WATER = builder("water").settleTicks(2).image(IWATER).liquid().build();
+        CLAY = builder("clay").health(2).image(ICLAY).build();
+        SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).image(ISEDIMENTARY_ROCK).build();
+
+        IGNEOUS_ROCK = builder("igneous_rock").health(3).image(IIGNEOUS_ROCK).build();
+        SILICATE = builder("silicate").health(3).image(ISILICATE).build();
         SULFUR = builder("sulfur").health(3).image(ISULFUR).build();
+
+        COPPER_ORE = builder("copper_ore").health(4).image(ICOPPER_ORE).build();
+        NICKEL = builder("nickel").health(4).image(INICKEL).build();
+        GOLD = builder("gold").health(4).image(IGOLD).build();
         MERCURY = builder("mercury").health(4).image(IMERCURY).build();
+
         CORAL = builder("coral").behaviorBuilder(LivingCoral::new).health(5).image(ICORAL).build();
-        LIMESTONE = builder("limestone").health(2).image(ILIMESTONE).build();
         TREE = builder("lumber").behaviorBuilder(TreeTile::new).health(5).image(ITREE).build();
+
+        OBSIDIAN = builder("obsidian").health(6).image(IOBSIDIAN).build();
+
+        WATER = builder("water").settleTicks(2).image(IWATER).liquid().build();
+        LAVA = builder("lava").settleTicks(8).image(ILAVA).liquid().build();
+
+        STEEL = builder("steel").health(20).image(ISTEEL).build();
+        CLOTH = builder("cloth").health(20).image(ICLOTH).build();
+        GLASS = builder("glass").health(20).image(IGLASS).build();
+        PAPER = builder("paper").health(20).image(IPAPER).build();
+        PLASTIC = builder("plastic").health(20).image(IPLASTIC).build();
+
+        FOUNDATION = builder("foundation").health(20).image(IFOUNDATION).build();
         COMPOSITE = builder("composite").health(Integer.MAX_VALUE).image(IFOUNDATION).build();
         BUILDING = builder("building").health(100).image(IFOUNDATION).build();
 

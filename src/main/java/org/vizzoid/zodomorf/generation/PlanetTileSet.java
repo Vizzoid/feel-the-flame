@@ -36,6 +36,15 @@ public class PlanetTileSet {
         return this;
     }
 
+    public Material caveBackground() {
+        if (caveAir.isSolid()) return caveAir;
+        if (sea.isSolid()) return sea;
+        if (mantle.isSolid()) return mantle;
+        if (crust.isSolid()) return crust;
+        if (dirt.isSolid()) return dirt;
+        return metal;
+    }
+
     public Material sea() {
         return sea;
     }

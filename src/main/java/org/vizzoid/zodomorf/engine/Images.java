@@ -17,9 +17,10 @@ public class Images {
         ISEDIMENTARY_ROCK, IIGNEOUS_ROCK, IDIRT, ILAVA, ISHADOW, 
         IDEBRIS, ICLAY, ISILICATE, INICKEL, IASH, IGRAVEL, IGOLD, 
         ISAND, ISANDSTONE, IICE, IOBSIDIAN, IWATER, ISULFUR, 
-        IMERCURY, ICORAL, ILIMESTONE, IMETEOR, ITREE, IEMPTY;
+        IMERCURY, ICORAL, ILIMESTONE, IMETEOR, ITREE, IEMPTY,
+        ISTEEL, ICLOTH, IGLASS, IPAPER, IPLASTIC;
 
-    public static final int TILE_SIZE = 3;
+    public static final int TILE_SIZE = 30;
 
     static  {
         IPLAYER = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
@@ -49,6 +50,11 @@ public class Images {
         IMETEOR = ofColor(new Color(98, 68, 51));
         ITREE = ofColor(new Color(133, 94, 66));
         IEMPTY = ofColor(new Color(0, 0, 0, 0));
+        ISTEEL = ofColor(new Color(113, 121, 126));
+        ICLOTH = ofColor(new Color(233, 220, 201));
+        IGLASS = ofColor(new Color(246, 254, 255));
+        IPAPER = ofColor(new Color(242, 238, 203));
+        IPLASTIC = ofColor(new Color(192,208,163));
     }
 
     private Images() {

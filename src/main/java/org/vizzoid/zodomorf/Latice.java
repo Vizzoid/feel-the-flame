@@ -62,7 +62,9 @@ public class Latice<T> implements Iterable<T>, Serializable {
 
     public T get(int x, int y) {
         if (isOutOfBounds(x, y)) return defaultValue;
-        return get(toIndex(x, y));
+        Object tile = latice[toIndex(x, y)];
+        if (tile == null) return defaultValue;
+        return (T) tile;
     }
 
     public T get(int index) {
@@ -74,7 +76,7 @@ public class Latice<T> implements Iterable<T>, Serializable {
 
     public void set(int x, int y, T t) {
         if (isOutOfBounds(x, y)) return;
-        set(toIndex(x, y), t);
+        latice[toIndex(x, y)] = t;
     }
 
     public void set(int index, T t) {

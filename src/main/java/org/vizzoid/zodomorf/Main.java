@@ -25,7 +25,8 @@ public class Main {
             //Planet desert = game.generatePlanet(new DesertPlanetGenerator());
             //Planet ocean = game.generatePlanet(new OceanPlanetGenerator());
             //Planet volcano = game.generatePlanet(new VolcanoPlanetGenerator());
-            //game.setPlanet(volcano);
+            //game.setPlanet(ocean);
+            //PlanetEngine.start(game);
             new PlanetEngine(game) {
                 @Override
                 public void newPlanetPainter() {

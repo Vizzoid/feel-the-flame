@@ -5,18 +5,6 @@ import org.vizzoid.zodomorf.Planet;
 
 public class Fluid implements TileBehavior {
 
-    public static final Fluid EMPTY = new Fluid(Tile.EMPTY) {
-        @Override
-        public void tick(long ticks) {
-
-        }
-
-        @Override
-        public boolean isMove() {
-            return false;
-        }
-    };
-
     private Tile tile;
     private int liquidSettleTick = 0;
     private boolean move = true;

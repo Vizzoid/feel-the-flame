@@ -8,7 +8,6 @@ import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
 import org.vizzoid.zodomorf.Structure;
-import org.vizzoid.zodomorf.generation.VolcanoPlanetGenerator;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 
@@ -86,7 +85,6 @@ public class StructurePainter extends LaticePainter implements InputPainter, Lat
         };
         dimension = engine.getDimension();
         this.latice = planet.getTileLatice();
-        new VolcanoPlanetGenerator().generate(planet);
         cameraX = latice.getWidth() / 2;
         cameraY = latice.getHeight() / 2;
         Material[] array = Material.array();

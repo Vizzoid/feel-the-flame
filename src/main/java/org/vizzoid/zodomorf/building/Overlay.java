@@ -1,4 +1,4 @@
-package org.vizzoid.zodomorf;
+package org.vizzoid.zodomorf.building;
 
 import java.util.ArrayList;
 import java.util.List;

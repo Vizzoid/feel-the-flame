@@ -1,7 +1,6 @@
 package org.vizzoid.zodomorf;
 
 import org.vizzoid.zodomorf.tile.BoundaryTile;
-import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 
 import java.io.IOException;
@@ -53,17 +52,46 @@ public class Planet implements Serializable {
         }
     }
 
-    private int time = 0;
+    private int time = 1000;
     private int day;
-    private transient double temperature = buildSkyTemperature();
-    private final Latice<Tile> latice = new Latice<>(500, 250);
+    private transient double temperature;
+    private final PlanetLatice latice = new PlanetLatice(this);
     private transient Avatar avatar;
     private final Random random = new Random();
     private final List<Entity> entities = new ArrayList<>();
+    private int minTemperature = 10;
+    private int maxTemperature = 210;
 
     public Planet() {
-        latice.setDefaultValue(Tile.EMPTY);
-        latice.fill((x, y) -> new Tile(this, Material.EMPTY, x, y));
+        temperature = buildSkyTemperature();
+    }
+
+    public int getMaxTemperature() {
+        return maxTemperature;
+    }
+
+    public int getMinTemperature() {
+        return minTemperature;
+    }
+
+    public void setMaxTemperature(int maxTemperature) {
+        this.maxTemperature = maxTemperature;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public void setMinTemperature(int minTemperature) {
+        this.minTemperature = minTemperature;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 
     public List<Entity> getEntities() {
@@ -107,14 +135,9 @@ public class Planet implements Serializable {
     }
 
     private double buildSkyTemperature() {
-        if (isDaytime()) {
-            double x = (time - 12566);
+        int middle = (minTemperature + maxTemperature) / 2;
 
-            return ((x * x) / -16000000) + 100;
-        }
-        double x = (time - 25620.5);
-
-        return ((x * x) / 190000) - 100;
+        return middle * Math.sin(time / 4774.64829) + middle;
     }
 
     public void tick(long ticks) {
@@ -133,6 +156,7 @@ public class Planet implements Serializable {
 
     public void transitionTemperature(Tile targetTile, Tile currentTile) {
         if (targetTile instanceof BoundaryTile) return;
+        if (targetTile == null) return;
 
         double target = targetTile.getTemperature();
         double current = currentTile.getTemperature();
@@ -141,7 +165,7 @@ public class Planet implements Serializable {
         boolean aboveTarget = target < current;
         double temperatureChange = getTemperatureChange(Math.abs(target - current));
         if (aboveTarget) temperatureChange *= -1;
-        temperatureChange *= 80 - (currentTile.getHealth() * 4);
+        temperatureChange *= 20 + ((Math.max(0, 8 - currentTile.getHealth() - targetTile.getHealth()) * 20));
         currentTile.setTemperature(current + temperatureChange);
         targetTile.setTemperature(target - temperatureChange);
     }
@@ -206,5 +230,9 @@ public class Planet implements Serializable {
                 tile1.setBackground(tile.getBackground());
             }
         }
+    }
+
+    public void resetTemperature() {
+        setTemperature(buildSkyTemperature());
     }
 }

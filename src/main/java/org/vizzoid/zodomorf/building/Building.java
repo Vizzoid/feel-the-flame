@@ -1,14 +1,15 @@
-package org.vizzoid.zodomorf;
+package org.vizzoid.zodomorf.building;
 
+import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 import org.vizzoid.zodomorf.tile.TileBehavior;
 
-public class Building implements TileBehavior {
+public abstract class Building implements TileBehavior {
 
     private final int width;
     private final int height;
-    private Tile tile = Tile.EMPTY;
+    protected Tile tile;
 
     public Building(int width, int height) {
         this.width = width;
@@ -16,6 +17,8 @@ public class Building implements TileBehavior {
     }
 
     public boolean canPlace(Tile tile) {
+        Avatar avatar = tile.getPlanet().getAvatar();
+        if (avatar.getStorage(getMaterial()) < getCost()) return false;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile relative = tile.relative(x, y);
@@ -26,6 +29,8 @@ public class Building implements TileBehavior {
     }
 
     public void place(Tile tile) {
+        Avatar avatar = tile.getPlanet().getAvatar();
+        if (avatar.spend(getMaterial(), getCost())) return;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile relative = tile.relative(x, y);
@@ -33,7 +38,7 @@ public class Building implements TileBehavior {
             }
         }
         tile.setMiddleGround(Material.BUILDING);
-        tile.setBehavior(this);
+        tile.setMiddleGroundBehavior(this);
     }
 
     @Override
@@ -50,4 +55,9 @@ public class Building implements TileBehavior {
     public void update() {
 
     }
+
+    public abstract Material getMaterial();
+
+    public abstract int getCost();
+
 }

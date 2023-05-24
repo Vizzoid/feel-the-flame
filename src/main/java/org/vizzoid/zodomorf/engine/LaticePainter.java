@@ -77,6 +77,7 @@ public class LaticePainter implements Painter {
     }
 
     public void paintTile(int tileX, int tileY) {
+        if (latice.isOutOfBounds(tileX, tileY)) return;
         latice.get(tileX, tileY).paint(currentTile);
     }
 

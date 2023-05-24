@@ -1,17 +1,17 @@
-package org.vizzoid.zodomorf;
-
-import java.awt.Image;
-import java.awt.event.KeyEvent;
-import java.util.function.Consumer;
+package org.vizzoid.zodomorf.building;
 
 import org.vizzoid.utils.position.Rectangle;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.util.function.Consumer;
 
 public class Input extends OverlayPart {
 
     private final Consumer<String> input;
     private final Type type;
     private String string;
-    
+
     public Input(int x, int y, int width, int height, Consumer<String> input) {
         this(x, y, width, height, input, Type.ALL);
     }
@@ -21,11 +21,11 @@ public class Input extends OverlayPart {
         this.input = input;
         this.type = type;
     }
-    
+
     public Input(Rectangle rectangle, Consumer<String> input) {
         this(rectangle, input, Type.ALL);
     }
-    
+
     public Input(Rectangle rectangle, Consumer<String> input, Type type) {
         super(rectangle);
         this.input = input;

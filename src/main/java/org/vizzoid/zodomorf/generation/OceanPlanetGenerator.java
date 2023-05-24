@@ -110,4 +110,12 @@ public class OceanPlanetGenerator implements PlanetGenerator {
             latice.get(coralX, sand[coralX]).setMiddleGround(Material.CORAL);
         }
     }
+
+    @Override
+    public void generate(Planet planet) {
+        planet.setMinTemperature(-90);
+        planet.setMaxTemperature(60);
+        planet.resetTemperature();
+        PlanetGenerator.super.generate(planet);
+    }
 }

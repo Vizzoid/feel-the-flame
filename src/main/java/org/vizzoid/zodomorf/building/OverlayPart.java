@@ -1,23 +1,22 @@
-package org.vizzoid.zodomorf;
+package org.vizzoid.zodomorf.building;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.KeyEvent;
-
-import org.vizzoid.utils.position.Point;
 import org.vizzoid.utils.position.ImmoveablePoint;
+import org.vizzoid.utils.position.Point;
 import org.vizzoid.utils.position.Rectangle;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public abstract class OverlayPart {
-    
+
     protected final Rectangle rectangle;
     protected boolean pressed = false;
 
     public OverlayPart(int x, int y, int width, int height) {
         this(new Rectangle(new ImmoveablePoint(x, y), width, height));
     }
-    
+
     public OverlayPart(Rectangle rectangle) {
         this.rectangle = rectangle;
     }
@@ -43,7 +42,7 @@ public abstract class OverlayPart {
     }
 
     public void press(KeyEvent e) {
-        
+
     }
 
     public void release(KeyEvent e) {

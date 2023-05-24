@@ -15,6 +15,7 @@ public class Tile implements TilePainter, Serializable {
 
     @Serial
     private static final long serialVersionUID = 8582575836241128646L;
+    private static final Color TILE_BREAKING = new Color(255, 255, 255, 118);
     public static final Tile EMPTY = new Tile(0, 0) {
         @Override
         public void setBackground(Material background) {
@@ -34,6 +35,7 @@ public class Tile implements TilePainter, Serializable {
 
         @Override
         public void paint(TileInfo info) {
+
         }
 
         @Override
@@ -55,8 +57,92 @@ public class Tile implements TilePainter, Serializable {
         public boolean canMoveInto() {
             return true;
         }
+
+        @Override
+        public Material getBackground() {
+            return Material.EMPTY;
+        }
+
+        @Override
+        public boolean isBoundary() {
+            return false;
+        }
+
+        @Override
+        public Material getMiddleGround() {
+            return Material.EMPTY;
+        }
+
+        @Override
+        public boolean isLiquid() {
+            return false;
+        }
+
+        @Override
+        public double getTemperature() {
+            return planet.getTemperature();
+        }
+
+        @Override
+        public TileBehavior getBehavior() {
+            return TileBehavior.EMPTY;
+        }
+
+        @Override
+        public TileBehavior getMiddleGroundBehavior() {
+            return TileBehavior.EMPTY;
+        }
+
+        @Override
+        public Material getMaterial() {
+            return Material.EMPTY;
+        }
+
+        @Override
+        public void setMiddleGroundBehavior(TileBehavior middleGroundBehavior) {
+
+        }
+
+        @Override
+        public void setMiddleGround(Material middleGround, boolean updateBehavior) {
+
+        }
+
+        @Override
+        public void setMiddleGround(Material middleGround) {
+
+        }
+
+        @Override
+        public void setBehavior(TileBehavior behavior) {
+
+        }
+
+        @Override
+        public void setMaterial(Material material, boolean updateBehavior) {
+
+        }
+
+        @Override
+        public void setMaterial(Material material, boolean updateBehavior, boolean updateBackground) {
+
+        }
+
+        @Override
+        public void setPlanet(Planet planet) {
+
+        }
+
+        @Override
+        public int getHealth() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public void transitionTemperature(Tile tile) {
+
+        }
     };
-    private static final Color TILE_BREAKING = new Color(255, 255, 255, 118);
 
     protected transient Planet planet;
     protected double temperature;
@@ -67,6 +153,11 @@ public class Tile implements TilePainter, Serializable {
     protected transient Material material = Material.EMPTY;
     protected transient TileBehavior behavior = TileBehavior.EMPTY;
     protected transient TileBehavior middleGroundBehavior = TileBehavior.EMPTY;
+
+    private Tile(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     @Serial
     private void writeObject(ObjectOutputStream oos)
@@ -89,19 +180,12 @@ public class Tile implements TilePainter, Serializable {
 
     public void setPlanet(Planet planet) {
         this.planet = planet;
-    }
-
-    private Tile(int x, int y) {
-        this.planet = null;
-        this.temperature = 0;
-        this.x = x;
-        this.y = y;
+        this.temperature = planet.getTemperature();
     }
 
 
     public Tile(Planet planet, int x, int y) {
-        this.planet = planet;
-        this.temperature = planet.getTemperature();
+        setPlanet(planet);
         this.x = x;
         this.y = y;
     }
@@ -156,7 +240,7 @@ public class Tile implements TilePainter, Serializable {
         this.material = material;
         if (updateBackground && material.isSolid()) setBackground(material);
         if (updateBehavior) behavior = material.buildBehavior(this);
-        updateNeighbors();
+        // updateNeighbors();
     }
 
     public void tick(long ticks) {
@@ -164,13 +248,33 @@ public class Tile implements TilePainter, Serializable {
             planet.transitionTemperature(this);
         }
         Latice<Tile> latice = planet.getTileLatice();
-        //planet.transitionTemperature(latice.get(x + 1, y), this);
-        planet.transitionTemperature(latice.get(x - 1, y), this);
-        //planet.transitionTemperature(latice.get(x, y + 1), this);
-        planet.transitionTemperature(latice.get(x, y - 1), this);
+        if (!material.isEmpty() || !middleGround.isEmpty() || !background.isEmpty()) {
+            //planet.transitionTemperature(latice.get(x + 1, y), this);
+            Tile left = left();
+            transitionTemperature(left);
+            //planet.transitionTemperature(latice.get(x, y + 1), this);
+            Tile below = below();
+            transitionTemperature(below);
+        } else {
+            temperature = planet.getTemperature();
+        }
 
         behavior.tick(ticks);
         middleGroundBehavior.tick(ticks);
+    }
+
+    public void transitionTemperature(Tile tile) {
+        if (tile.isBoundary()) return;
+        double tileTemp = tile.getTemperature();
+
+        if (Math.abs(tileTemp - temperature) > 100) {
+            double midTemp = (tileTemp + temperature) / 2;
+            setTemperature(midTemp);
+            tile.setTemperature(midTemp);
+        }
+        else {
+            planet.transitionTemperature(tile, this);
+        }
     }
 
     public TileBehavior getMiddleGroundBehavior() {
@@ -179,6 +283,7 @@ public class Tile implements TilePainter, Serializable {
 
     public void setMiddleGroundBehavior(TileBehavior middleGroundBehavior) {
         this.middleGroundBehavior = middleGroundBehavior;
+        middleGroundBehavior.setTile(this);
     }
 
     public boolean isLiquid() {
@@ -240,10 +345,16 @@ public class Tile implements TilePainter, Serializable {
 
         if (!PlanetPainter.TEMP) return;
         Color color = new Color(
-                temperature > 0 ? 255 : Math.min(255, Math.max(0, (int) (temperature * 51 / 20) + 255)), 0,
-                temperature < 0 ? 255 : Math.min(255, Math.max(0, (int) (temperature * 51 / -20) + 255)), 255);
+                temperature > 110 ? 255 : Math.min(255, Math.max(0, (int) ((temperature - 110) * 51 / 20) + 255)), 0,
+                temperature < 110 ? 255 : Math.min(255, Math.max(0, (int) ((temperature - 110) * 51 / -20) + 255)), 255);
         info.graphics.setColor(color);
         info.graphics.fillRect(info.screenX, info.screenY, info.squareSize, info.squareSize);
+
+        Color color1 = new Color(
+                77, 0,
+                255, 255);
+        info.graphics.setColor(color1);
+        info.graphics.fillRect(0, 0, 100, 100);
     }
 
     public int getX() {
@@ -268,6 +379,7 @@ public class Tile implements TilePainter, Serializable {
 
     public void setBehavior(TileBehavior behavior) {
         this.behavior = behavior;
+        behavior.setTile(this);
     }
 
     public boolean isBoundary() {

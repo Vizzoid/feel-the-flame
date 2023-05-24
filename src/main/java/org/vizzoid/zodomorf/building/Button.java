@@ -1,8 +1,8 @@
-package org.vizzoid.zodomorf;
-
-import java.awt.Image;
+package org.vizzoid.zodomorf.building;
 
 import org.vizzoid.utils.position.Rectangle;
+
+import java.awt.*;
 
 public class Button extends OverlayPart {
 
@@ -12,7 +12,7 @@ public class Button extends OverlayPart {
         super(x, y, width, height);
         this.runnable = runnable;
     }
-    
+
     public Button(Rectangle rectangle, Runnable runnable) {
         super(rectangle);
         this.runnable = runnable;

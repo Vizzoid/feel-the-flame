@@ -31,10 +31,10 @@ public class Avatar implements LaticeCamera, Serializable {
     private transient boolean movingLeft, movingRight;
     private transient int miningTileHealth;
     private final IntPoint mouseTile = new IntPoint();
-    private Tile miningTile = Tile.EMPTY;
+    private Tile miningTile;
     private transient boolean clicking = false;
     private final Map<String, Integer> storage = new HashMap<>();
-    private transient Tile clickTile = Tile.EMPTY;
+    private transient Tile clickTile;
     private boolean onGround = true;
     private transient Material miningMiddleGround = Material.EMPTY;
 
@@ -107,7 +107,7 @@ public class Avatar implements LaticeCamera, Serializable {
     }
 
     public boolean isTooCold() {
-        return temperature < 10;
+        return temperature > 250 || temperature < 40;
     }
 
     public boolean isWarmingUp() {
@@ -283,7 +283,6 @@ public class Avatar implements LaticeCamera, Serializable {
                     storage.put(material, count + 1);
 
                     clickTile.setMiddleGround(Material.EMPTY);
-                    miningTile = Tile.EMPTY;
                     miningMiddleGround = Material.EMPTY;
                 }
             }
