@@ -5,10 +5,13 @@ import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 import org.vizzoid.zodomorf.tile.TileBehavior;
 
-public abstract class Building implements TileBehavior {
+import java.awt.*;
 
-    private final int width;
-    private final int height;
+public abstract class Building implements TileBehavior, Buildable, Cloneable {
+
+    protected final CompositeBuilding composite = new CompositeBuilding(this);
+    protected final int width;
+    protected final int height;
     protected Tile tile;
 
     public Building(int width, int height) {
@@ -25,20 +28,27 @@ public abstract class Building implements TileBehavior {
                 if (relative.isSolid() || relative.getMiddleGround().isSolid()) return false;
             }
         }
+        for (int x = 0; x < width; x++) {
+            Tile relative = tile.relative(x, -1);
+            if (!relative.isSolid()) return false;
+        }
         return true;
     }
 
     public void place(Tile tile) {
         Avatar avatar = tile.getPlanet().getAvatar();
-        if (avatar.spend(getMaterial(), getCost())) return;
+        avatar.spend(getMaterial(), getCost());
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile relative = tile.relative(x, y);
                 relative.setMiddleGround(Material.COMPOSITE);
+                relative.setMiddleGroundBehavior(composite);
             }
         }
-        tile.setMiddleGround(Material.BUILDING);
+        Building cloned = clone();
         tile.setMiddleGroundBehavior(this);
+        tile.setMiddleGround(Material.BUILDING, false);
+        tile.getPlanet().getAvatar().setBuildable(cloned);
     }
 
     @Override
@@ -56,8 +66,19 @@ public abstract class Building implements TileBehavior {
 
     }
 
+    @Override
+    public abstract Image getImage();
+
     public abstract Material getMaterial();
 
     public abstract int getCost();
 
+    @Override
+    public Building clone() {
+        try {
+            return (Building) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

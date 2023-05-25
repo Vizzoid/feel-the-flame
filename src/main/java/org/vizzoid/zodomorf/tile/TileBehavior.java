@@ -1,5 +1,7 @@
 package org.vizzoid.zodomorf.tile;
 
+import java.awt.*;
+
 public interface TileBehavior {
 
     TileBehavior EMPTY = new TileBehavior() {
@@ -25,5 +27,13 @@ public interface TileBehavior {
     void tick(long ticks);
 
     void update();
+
+    default Image getImage() {
+        throw new UnsupportedOperationException();
+    }
+
+    default void interact() {
+
+    }
 
 }

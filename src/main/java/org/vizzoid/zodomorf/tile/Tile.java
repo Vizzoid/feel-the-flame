@@ -1,6 +1,8 @@
 package org.vizzoid.zodomorf.tile;
 
 import org.vizzoid.utils.Optional;
+import org.vizzoid.utils.position.ImmoveablePoint;
+import org.vizzoid.utils.position.Point;
 import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
@@ -146,8 +148,7 @@ public class Tile implements TilePainter, Serializable {
 
     protected transient Planet planet;
     protected double temperature;
-    protected final int x;
-    protected final int y;
+    protected final ImmoveablePoint pos;
     protected transient Material background = Material.EMPTY;
     protected transient Material middleGround = Material.EMPTY;
     protected transient Material material = Material.EMPTY;
@@ -155,8 +156,7 @@ public class Tile implements TilePainter, Serializable {
     protected transient TileBehavior middleGroundBehavior = TileBehavior.EMPTY;
 
     private Tile(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.pos = new ImmoveablePoint(x, y);
     }
 
     @Serial
@@ -186,8 +186,7 @@ public class Tile implements TilePainter, Serializable {
 
     public Tile(Planet planet, int x, int y) {
         setPlanet(planet);
-        this.x = x;
-        this.y = y;
+        this.pos = new ImmoveablePoint(x, y);
     }
 
     public Tile(Planet planet, Material material, int x, int y) {
@@ -247,7 +246,6 @@ public class Tile implements TilePainter, Serializable {
         if (background.isEmpty()) {
             planet.transitionTemperature(this);
         }
-        Latice<Tile> latice = planet.getTileLatice();
         if (!material.isEmpty() || !middleGround.isEmpty() || !background.isEmpty()) {
             //planet.transitionTemperature(latice.get(x + 1, y), this);
             Tile left = left();
@@ -300,6 +298,8 @@ public class Tile implements TilePainter, Serializable {
 
     public void updateNeighbors() {
         Latice<Tile> latice = planet.getTileLatice();
+        int x = (int) pos.getX();
+        int y = (int) pos.getY();
         latice.get(x + 1, y).update();
         latice.get(x - 1, y).update();
         latice.get(x, y + 1).update();
@@ -308,8 +308,8 @@ public class Tile implements TilePainter, Serializable {
 
     public void swap(Tile tile) {
         Material material1 = material;
-        setMaterial(tile.material, false);
-        tile.setMaterial(material1, false);
+        setMaterial(tile.material, false, false);
+        tile.setMaterial(material1, false, false);
 
         TileBehavior behavior1 = behavior;
         behavior = tile.behavior;
@@ -330,8 +330,8 @@ public class Tile implements TilePainter, Serializable {
     @Override
     public void paint(TileInfo info) {
         background.paintBackground(info);
-        material.paint(info);
-        middleGround.paint(info);
+        material.paint(info, behavior);
+        middleGround.paint(info, middleGroundBehavior);
 
         Avatar avatar = planet.getAvatar();
         Material material = this.material.isSolid() ? this.material : middleGround;
@@ -358,11 +358,11 @@ public class Tile implements TilePainter, Serializable {
     }
 
     public int getX() {
-        return x;
+        return (int) pos.getX();
     }
 
     public int getY() {
-        return y;
+        return (int) pos.getY();
     }
 
     public int getHealth() {
@@ -387,7 +387,7 @@ public class Tile implements TilePainter, Serializable {
     }
 
     public Tile relative(int x, int y) {
-        return planet.getTileLatice().get(this.x + x, this.y + y);
+        return planet.getTileLatice().get(pos.getX() + x, pos.getY() + y);
     }
 
     public Tile above() {
@@ -426,4 +426,12 @@ public class Tile implements TilePainter, Serializable {
         return Optional.empty();
     }
 
+    public Point getPos() {
+        return pos;
+    }
+
+    public void interact() {
+        behavior.interact();
+        middleGroundBehavior.interact();
+    }
 }

@@ -61,12 +61,11 @@ public class Material implements TilePainter {
         PLASTIC = builder("plastic").health(20).image(IPLASTIC).build();
 
         FOUNDATION = builder("foundation").health(20).image(IFOUNDATION).build();
-        COMPOSITE = builder("composite").health(Integer.MAX_VALUE).image(IFOUNDATION).build();
-        BUILDING = builder("building").health(100).image(IFOUNDATION).build();
+        COMPOSITE = builder("composite").health(Integer.MAX_VALUE).image(IEMPTY).build();
+        BUILDING = builder("building").health(100).imageFromBehavior().build();
 
         materials.close();
     }
-
 
     private static MaterialBuilder builder(String key) {
         return new MaterialBuilder().key(key);
@@ -98,6 +97,7 @@ public class Material implements TilePainter {
     private final int health;
     private final int settleTicks;
     private final Function<Tile, TileBehavior> behaviorBuilder;
+    private final boolean imageFromBehavior;
 
     public Material(MaterialBuilder builder) {
         this.image = builder.image;
@@ -106,6 +106,7 @@ public class Material implements TilePainter {
         this.health = builder.health;
         this.settleTicks = builder.settleTicks;
         this.behaviorBuilder = builder.behaviorBuilder;
+        this.imageFromBehavior = builder.imageFromBehavior;
 
         materials.put(key, this);
     }
@@ -130,6 +131,10 @@ public class Material implements TilePainter {
         return type == MaterialType.SOLID;
     }
 
+    public boolean isImageFromBehavior() {
+        return imageFromBehavior;
+    }
+
     @Override
     public void paint(TileInfo info) {
         if (isGas()) return;
@@ -137,8 +142,7 @@ public class Material implements TilePainter {
     }
 
     public void paintBackground(TileInfo info) {
-        if (isGas()) return;
-        info.drawTile(image);
+        paint(info);
         info.graphics.setColor(BACKGROUND_SHADE);
         info.graphics.fillRect(info.screenX, info.screenY, info.squareSize, info.squareSize);
     }
@@ -163,6 +167,17 @@ public class Material implements TilePainter {
         return behaviorBuilder.apply(t);
     }
 
+    public void paint(TileInfo info, TileBehavior behavior) {
+        if (isGas()) return;
+        info.drawTile(!imageFromBehavior ? image : behavior.getImage());
+    }
+
+    public void paintBackground(TileInfo info, TileBehavior behavior) {
+        paint(info, behavior);
+        info.graphics.setColor(BACKGROUND_SHADE);
+        info.graphics.fillRect(info.screenX, info.screenY, info.squareSize, info.squareSize);
+    }
+
     private static class MaterialBuilder implements IBuilder<Material> {
 
         private String key = "empty";
@@ -171,6 +186,7 @@ public class Material implements TilePainter {
         private int health = 1;
         private int settleTicks = -1;
         private Function<Tile, TileBehavior> behaviorBuilder = t -> TileBehavior.EMPTY;
+        private boolean imageFromBehavior = false;
 
         public MaterialBuilder image(Image image) {
             this.image = image;
@@ -215,6 +231,11 @@ public class Material implements TilePainter {
         @Override
         public void check() {
 
+        }
+
+        public MaterialBuilder imageFromBehavior() {
+            this.imageFromBehavior = true;
+            return this;
         }
     }
 

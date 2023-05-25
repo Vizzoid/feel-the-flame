@@ -23,7 +23,7 @@ public class Meteor implements Entity {
         this.planet = planet;
         int y = planet.getHighestY(x);
 
-        int startX = planet.randomX();
+        int startX = Math.min(planet.getWidth() - 1, Math.max(0, x + planet.getRandom().nextInt(0, 161) - 80));
         int startY = planet.getHeight() - 3;
         hitbox.getPos().set(startX, startY);
         MoveablePoint velocity = hitbox.getVelocity();

@@ -18,13 +18,13 @@ public class Images {
         IDEBRIS, ICLAY, ISILICATE, INICKEL, IASH, IGRAVEL, IGOLD, 
         ISAND, ISANDSTONE, IICE, IOBSIDIAN, IWATER, ISULFUR, 
         IMERCURY, ICORAL, ILIMESTONE, IMETEOR, ITREE, IEMPTY,
-        ISTEEL, ICLOTH, IGLASS, IPAPER, IPLASTIC;
+        ISTEEL, ICLOTH, IGLASS, IPAPER, IPLASTIC, ICOOLER,
+        IHEATER, IROCKET;
 
     public static final int TILE_SIZE = 30;
 
     static  {
-        IPLAYER = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
-        IFOUNDATION = ofColor(Color.LIGHT_GRAY);
+        IEMPTY = ofColor(new Color(0, 0, 0, 0));
         ICOPPER_ORE = ofColor(new Color(205, 127, 50));
         ISEDIMENTARY_ROCK = ofColor(Color.GRAY);
         IIGNEOUS_ROCK = ofColor(Color.DARK_GRAY);
@@ -47,14 +47,22 @@ public class Images {
         IMERCURY = ofColor(new Color(219,206,202));
         ICORAL = ofColor(new Color(248, 131, 121));
         ILIMESTONE = ofColor(new Color(190, 189, 143));
-        IMETEOR = ofColor(new Color(98, 68, 51));
         ITREE = ofColor(new Color(133, 94, 66));
-        IEMPTY = ofColor(new Color(0, 0, 0, 0));
         ISTEEL = ofColor(new Color(113, 121, 126));
         ICLOTH = ofColor(new Color(233, 220, 201));
         IGLASS = ofColor(new Color(246, 254, 255));
         IPAPER = ofColor(new Color(242, 238, 203));
         IPLASTIC = ofColor(new Color(192,208,163));
+
+        // buildings
+        IFOUNDATION = ofColor(Color.LIGHT_GRAY);
+        ICOOLER = ofColor(Color.BLUE);
+        IHEATER = ofColor(Color.RED);
+        IROCKET = ofColor(Color.ORANGE);
+
+        // entities
+        IPLAYER = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
+        IMETEOR = ofColor(new Color(98, 68, 51));
     }
 
     private Images() {

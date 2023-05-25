@@ -1,6 +1,7 @@
 package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.position.*;
+import org.vizzoid.zodomorf.building.Buildable;
 import org.vizzoid.zodomorf.engine.IntPoint;
 import org.vizzoid.zodomorf.engine.LaticeCamera;
 import org.vizzoid.zodomorf.tile.Material;
@@ -35,7 +36,7 @@ public class Avatar implements LaticeCamera, Serializable {
     private transient boolean clicking = false;
     private final Map<String, Integer> storage = new HashMap<>();
     private transient Tile clickTile;
-    private boolean onGround = true;
+    private transient Buildable buildable = Buildable.EMPTY;
     private transient Material miningMiddleGround = Material.EMPTY;
 
     @Serial
@@ -250,18 +251,19 @@ public class Avatar implements LaticeCamera, Serializable {
         } else food -= ticks;
 
         if (clicking) {
-            System.out.println(1);
-            clickTile = latice.get(((int) pos.getX()) + mouseTile.getXInt(), ((int) pos.getY()) + mouseTile.getYInt());
+            clickTile = getMouseTileRel();
+            if (!buildable.isEmpty()) {
+                if (!buildable.canPlace(clickTile)) return;
+                buildable.place(clickTile);
+                return;
+            }
+
             if (clickTile.isSolid()) {
-                System.out.println(2);
                 if (!clickTile.equals(miningTile)) {
-                    System.out.println(3);
                     miningTileHealth = clickTile.getHealth();
                     miningTile = clickTile;
                 }
-                System.out.println(4);
                 if ((miningTileHealth -= ticks) < 1) {
-                    System.out.println(5);
                     String material = clickTile.getMaterial().getKey();
                     int count = storage.computeIfAbsent(material, m -> 0);
                     storage.put(material, count + 1);
@@ -269,15 +271,12 @@ public class Avatar implements LaticeCamera, Serializable {
                     clickTile.setMaterial(Material.EMPTY);
                 }
             } else if (clickTile.getMiddleGround().isSolid()) {
-                System.out.println(6);
                 if (!clickTile.equals(miningTile) || !clickTile.getMiddleGround().equals(miningMiddleGround)) {
-                    System.out.println(7);
                     miningTileHealth = clickTile.getMiddleGround().getHealth();
                     miningTile = clickTile;
                     miningMiddleGround = clickTile.getMiddleGround();
                 }
                 if ((miningTileHealth -= ticks) < 1) {
-                    System.out.println(8);
                     String material = clickTile.getMiddleGround().getKey();
                     int count = storage.computeIfAbsent(material, m -> 0);
                     storage.put(material, count + 1);
@@ -287,6 +286,19 @@ public class Avatar implements LaticeCamera, Serializable {
                 }
             }
         }
+    }
+
+    public Tile getMouseTileRel() {
+        MoveablePoint pos = getPos();
+        return planet.getTileLatice().get(((int) pos.getX()) + mouseTile.getXInt(), ((int) pos.getY()) + mouseTile.getYInt());
+    }
+
+    public Buildable getBuildable() {
+        return buildable;
+    }
+
+    public void setBuildable(Buildable buildable) {
+        this.buildable = buildable;
     }
 
     public int getStorage(Material material) {

@@ -26,8 +26,8 @@ public class StructurePainter extends LaticePainter implements InputPainter, Lat
     private final PlanetPainter planetPainter;
     private Material material = Material.FOUNDATION;
     private final ShopItem[] items = new ShopItem[Material.values().size()];
-    private final List<TileRect> tileLatice = new ArrayList<>();
     private final int shopX;
+    private final List<TileRect> tileLatice = new ArrayList<>();
     private int type = 1;
     private boolean listeningName = false;
     private String name = "";

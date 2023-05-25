@@ -1,5 +1,6 @@
 package org.vizzoid.zodomorf.generation;
 
+import org.vizzoid.zodomorf.BarrenPlanet;
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
 import org.vizzoid.zodomorf.tile.Material;
@@ -77,5 +78,12 @@ public class BarrenPlanetGenerator implements PlanetGenerator {
         planet.setMaxTemperature(210);
         planet.resetTemperature();
         PlanetGenerator.super.generate(planet);
+    }
+
+    @Override
+    public Planet generate() {
+        Planet planet = new BarrenPlanet();
+        generate(planet);
+        return planet;
     }
 }

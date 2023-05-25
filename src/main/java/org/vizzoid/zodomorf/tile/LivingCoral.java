@@ -28,19 +28,19 @@ public class LivingCoral implements TileBehavior {
     }
 
     protected int minGrowth() {
-        return 3600;
+        return 15000;
     }
 
     protected int maxGrowth() {
-        return 13200;
+        return 30000;
     }
 
     protected int minLime() {
-        return 1200;
+        return 45000;
     }
 
     protected int maxLime() {
-        return 6000;
+        return 90000;
     }
 
     @Override

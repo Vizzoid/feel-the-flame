@@ -216,4 +216,9 @@ public interface PlanetGenerator {
         }
     }
 
+    default Planet generate() {
+        Planet planet = new Planet();
+        generate(planet);
+        return planet;
+    }
 }

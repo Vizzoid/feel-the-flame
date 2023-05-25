@@ -13,10 +13,18 @@ public class Game implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 6805061657282699346L;
+    private static Game instance;
+    private static final int UNTIL_METEOR_SHOWER = Planet.TIME_IN_DAY * 10;
 
     private final Avatar avatar;
     private final List<Planet> planets = new ArrayList<>();
     private StructurePainter structureBuilder = null;
+    private MeteorShower meteorShower = null;
+    private int untilNextMeteorShower = UNTIL_METEOR_SHOWER;
+
+    public static Game getInstance() {
+        return instance;
+    }
 
     public StructurePainter getStructureBuilder() {
         return structureBuilder;
@@ -27,6 +35,7 @@ public class Game implements Serializable {
     }
 
     public Game() {
+        instance = this;
         avatar = new Avatar();
     }
 
@@ -39,8 +48,7 @@ public class Game implements Serializable {
     }
 
     public Planet generatePlanet(PlanetGenerator generator) {
-        Planet planet = new Planet();
-        generator.generate(planet);
+        Planet planet = generator.generate();
         planets.add(planet);
         return planet;
     }
@@ -68,6 +76,13 @@ public class Game implements Serializable {
             planet.tick(ticks);
         }
         avatar.tick(ticks);
+
+        if ((untilNextMeteorShower -= ticks) < 0) {
+            if (meteorShower == null) meteorShower = new MeteorShower(planets);
+            meteorShower.tick(ticks);
+
+            if (meteorShower.isDone()) untilNextMeteorShower = UNTIL_METEOR_SHOWER;
+        }
     }
 
 }

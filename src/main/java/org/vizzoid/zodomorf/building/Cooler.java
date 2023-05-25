@@ -1,6 +1,9 @@
 package org.vizzoid.zodomorf.building;
 
+import org.vizzoid.zodomorf.engine.Images;
 import org.vizzoid.zodomorf.tile.Material;
+
+import java.awt.*;
 
 public class Cooler extends Building {
     public Cooler() {
@@ -10,8 +13,8 @@ public class Cooler extends Building {
     @Override
     public void tick(long ticks) {
         double temperature = tile.getTemperature();
-        if (temperature < -20) return;
-        tile.setTemperature(temperature - ticks);
+        if (temperature < tile.getPlanet().getMinTemperature()) return;
+        tile.setTemperature(temperature - ticks * 5);
     }
 
     @Override
@@ -22,5 +25,15 @@ public class Cooler extends Building {
     @Override
     public int getCost() {
         return 20;
+    }
+
+    @Override
+    public String getName() {
+        return "Cooler";
+    }
+
+    @Override
+    public Image getImage() {
+        return Images.ICOOLER;
     }
 }

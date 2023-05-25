@@ -2,8 +2,7 @@ package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.zodomorf.engine.PlanetEngine;
-import org.vizzoid.zodomorf.engine.StructurePainter;
-import org.vizzoid.zodomorf.generation.OpenSimplex2S;
+import org.vizzoid.zodomorf.generation.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -19,15 +18,15 @@ public class Main {
 
         if (!visual) {
             Game game = new Game();
-            //Planet barren = game.generatePlanet(new BarrenPlanetGenerator());
-            //Planet land = game.generatePlanet(new LandPlanetGenerator());
-            //Planet forest = game.generatePlanet(new ForestPlanetGenerator());
-            //Planet desert = game.generatePlanet(new DesertPlanetGenerator());
-            //Planet ocean = game.generatePlanet(new OceanPlanetGenerator());
-            //Planet volcano = game.generatePlanet(new VolcanoPlanetGenerator());
-            //game.setPlanet(ocean);
-            //PlanetEngine.start(game);
-            new PlanetEngine(game) {
+            Planet barren = game.generatePlanet(new BarrenPlanetGenerator());
+            Planet land = game.generatePlanet(new LandPlanetGenerator());
+            Planet forest = game.generatePlanet(new ForestPlanetGenerator());
+            Planet desert = game.generatePlanet(new DesertPlanetGenerator());
+            Planet ocean = game.generatePlanet(new OceanPlanetGenerator());
+            Planet volcano = game.generatePlanet(new VolcanoPlanetGenerator());
+            game.setPlanet(barren);
+            PlanetEngine.start(game);
+            /*new PlanetEngine(game) {
                 @Override
                 public void newPlanetPainter() {
                     setPainter(new StructurePainter(this.getEngine()));
@@ -37,21 +36,21 @@ public class Main {
                 public void tick(long missedTime) {
 
                 }
-            };
+            };*/
 
-            /*Thread.sleep(10000);
+            /*Thread.sleep(5000);
             game.setPlanet(land);
 
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             game.setPlanet(forest);
 
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             game.setPlanet(desert);
 
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             game.setPlanet(ocean);
 
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             game.setPlanet(volcano);*/
 
 

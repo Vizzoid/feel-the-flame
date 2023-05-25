@@ -13,6 +13,8 @@ import java.util.Random;
 
 public class Planet implements Serializable {
 
+    public static final int TIME_IN_DAY = 15000;
+    public static final double DAY_TEMP = (TIME_IN_DAY * 0.5) / Math.PI;
     @Serial
     private static final long serialVersionUID = -7424585672793399059L;
 
@@ -118,14 +120,6 @@ public class Planet implements Serializable {
         return avatar;
     }
 
-    public boolean isDaytime() {
-        return time < 20000;
-    }
-
-    public boolean isNighttime() {
-        return time >= 20000;
-    }
-
     public double getTemperature() {
         return temperature;
     }
@@ -137,13 +131,17 @@ public class Planet implements Serializable {
     private double buildSkyTemperature() {
         int middle = (minTemperature + maxTemperature) / 2;
 
-        return middle * Math.sin(time / 4774.64829) + middle;
+        return middle * Math.sin(time / DAY_TEMP) + middle;
+    }
+
+    public void newDay() {
+        day++;
     }
 
     public void tick(long ticks) {
-        if ((time += ticks) > 30000) {
+        if ((time += ticks) > TIME_IN_DAY) {
             time = 0;
-            day++;
+            newDay();
         }
         temperature = buildSkyTemperature();
         for (Tile tile : latice) {
