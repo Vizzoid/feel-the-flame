@@ -33,6 +33,16 @@ public class ComfortableRocket extends Rocket {
         }
     }
 
-
+    @Override
+    public void place(Tile tile) {
+        super.place(tile);
+        double minTemp = tile.getPlanet().getMinTemperature();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile relative = tile.relative(x, y);
+                relative.setTemperature(minTemp);
+            }
+        }
+    }
 
 }

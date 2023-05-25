@@ -1,5 +1,6 @@
 package org.vizzoid.zodomorf.building;
 
+import org.vizzoid.utils.position.Point;
 import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
@@ -41,6 +42,7 @@ public abstract class Building implements TileBehavior, Buildable, Cloneable {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Tile relative = tile.relative(x, y);
+                relative.setMaterial(Material.EMPTY);
                 relative.setMiddleGround(Material.COMPOSITE);
                 relative.setMiddleGroundBehavior(composite);
             }
@@ -81,4 +83,13 @@ public abstract class Building implements TileBehavior, Buildable, Cloneable {
             throw new AssertionError();
         }
     }
+
+    public Tile getTile() {
+        return tile;
+    }
+
+    public Point getPos() {
+        return tile.getPos();
+    }
+
 }

@@ -2,6 +2,7 @@ package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.position.*;
 import org.vizzoid.zodomorf.building.Buildable;
+import org.vizzoid.zodomorf.building.InsulatorSuit;
 import org.vizzoid.zodomorf.engine.IntPoint;
 import org.vizzoid.zodomorf.engine.LaticeCamera;
 import org.vizzoid.zodomorf.tile.Material;
@@ -38,21 +39,40 @@ public class Avatar implements LaticeCamera, Serializable {
     private transient Tile clickTile;
     private transient Buildable buildable = Buildable.EMPTY;
     private transient Material miningMiddleGround = Material.EMPTY;
+    private transient InsulatorSuit suit = null;
 
     @Serial
     private void writeObject(ObjectOutputStream oos)
       throws IOException {
         oos.defaultWriteObject();
+        oos.writeObject(Game.getInstance().getPlanets().indexOf(planet));
+        Point suitPos = suit == null ? new ImmoveablePoint(-1, -1) : suit.getPos();
+        oos.writeObject(suitPos);
     }
 
     @Serial
     private void readObject(ObjectInputStream ois)
       throws ClassNotFoundException, IOException {
         ois.defaultReadObject();
+        Game.getInstance().setPlanet(ois.readInt());
+        Point suitPos = (Point) ois.readObject();
+        if (suitPos.getX() != -1) {
+            suit = (InsulatorSuit) planet.getTileLatice()
+                .get(suitPos.getX(), suitPos.getY())
+                .getMiddleGroundBehavior();
+        }
     }
 
     public Avatar() {
 
+    }
+
+    public InsulatorSuit getSuit() {
+        return suit;
+    }
+
+    public void setSuit(InsulatorSuit suit) {
+        this.suit = suit;
     }
 
     public void setTemperature(double temperature) {
@@ -108,7 +128,7 @@ public class Avatar implements LaticeCamera, Serializable {
     }
 
     public boolean isTooCold() {
-        return temperature > 250 || temperature < 40;
+        return suit != null && (temperature > 250 || temperature < 40);
     }
 
     public boolean isWarmingUp() {
