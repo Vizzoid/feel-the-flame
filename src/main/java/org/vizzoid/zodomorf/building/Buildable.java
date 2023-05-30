@@ -37,7 +37,7 @@ public interface Buildable {
     };
 
     static Buildable[] array() {
-        return new Buildable[] {new Cooler(), new Heater(), new Rocket(), new ComfortableRocket(), new MaterialBuildable(Material.FOUNDATION, Material.CLAY, 2)};
+        return new Buildable[] {new Cooler(), new Heater(), new Rocket(), new ComfortableRocket(), new InsulatorSuit(), new MaterialBuildable(Material.FOUNDATION, Material.CLAY, 2)};
     }
 
     boolean canPlace(Tile tile);

@@ -49,6 +49,7 @@ public class Game implements Serializable {
 
     public Planet generatePlanet(PlanetGenerator generator) {
         Planet planet = generator.generate();
+        planet.setAvatar(avatar);
         planets.add(planet);
         return planet;
     }
@@ -58,7 +59,7 @@ public class Game implements Serializable {
     }
 
     public void setPlanet(Planet planet) {
-        planet.setAvatar(avatar);
+        avatar.setPlanet(planet);
 
         PlanetEngine engine = PlanetEngine.getInstance();
         if (engine != null) {

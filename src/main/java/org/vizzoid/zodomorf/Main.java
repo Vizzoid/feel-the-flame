@@ -17,14 +17,14 @@ public class Main {
         boolean visual = false;
 
         if (!visual) {
-            Game game = new Game();
-            Planet barren = game.generatePlanet(new BarrenPlanetGenerator());
-            Planet land = game.generatePlanet(new LandPlanetGenerator());
+            Game game = new Game();/*
+            Planet barren = game.generatePlanet(new BarrenPlanetGenerator());*/
+            Planet land = game.generatePlanet(new LandPlanetGenerator());/*
             Planet forest = game.generatePlanet(new ForestPlanetGenerator());
             Planet desert = game.generatePlanet(new DesertPlanetGenerator());
             Planet ocean = game.generatePlanet(new OceanPlanetGenerator());
-            Planet volcano = game.generatePlanet(new VolcanoPlanetGenerator());
-            game.setPlanet(barren);
+            Planet volcano = game.generatePlanet(new VolcanoPlanetGenerator());*/
+            game.setPlanet(land);
             PlanetEngine.start(game);
             /*new PlanetEngine(game) {
                 @Override

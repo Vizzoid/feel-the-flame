@@ -1,5 +1,7 @@
 package org.vizzoid.zodomorf;
 
+import org.vizzoid.zodomorf.entity.Meteor;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;

@@ -7,7 +7,7 @@ public class ComfortableRocket extends Rocket {
 
     @Override
     public Material getMaterial() {
-        return Material.NICKEL;
+        return Material.STEEL;
     }
 
     @Override

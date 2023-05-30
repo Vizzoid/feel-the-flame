@@ -89,6 +89,10 @@ public class Avatar implements LaticeCamera, Serializable {
 
     public void setPlanet(Planet planet) {
         this.planet = planet;
+        planet.setAvatar(this);
+
+        int x = (int) (planet.getTileLatice().getWidth() * 0.5);
+        getPos().set(x, planet.getHighestY(x) + 1);
     }
 
     public MoveablePoint getPos() {

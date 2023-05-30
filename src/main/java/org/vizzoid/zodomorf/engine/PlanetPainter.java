@@ -6,7 +6,7 @@ import org.vizzoid.utils.position.MoveablePoint;
 import org.vizzoid.utils.position.Point;
 import org.vizzoid.utils.position.Rectangle;
 import org.vizzoid.zodomorf.Avatar;
-import org.vizzoid.zodomorf.Entity;
+import org.vizzoid.zodomorf.entity.Entity;
 import org.vizzoid.zodomorf.Planet;
 import org.vizzoid.zodomorf.building.Buildable;
 

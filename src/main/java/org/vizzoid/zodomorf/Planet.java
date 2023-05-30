@@ -1,5 +1,6 @@
 package org.vizzoid.zodomorf;
 
+import org.vizzoid.zodomorf.entity.Entity;
 import org.vizzoid.zodomorf.tile.BoundaryTile;
 import org.vizzoid.zodomorf.tile.Tile;
 
@@ -23,7 +24,7 @@ public class Planet implements Serializable {
     private static final double[] TEMP_LOOKUP_TABLE = new double[TEMP_LOOKUP_TABLE_SIZE]; // precalculated temperature transfer table
 
     private static double buildTransition(double diff) {
-        return 25 / (633 * Math.pow(0.979, diff) - 50);
+        return 25 / (633 * Math.pow(0.979, diff));
     }
 
     static {
@@ -106,10 +107,6 @@ public class Planet implements Serializable {
 
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
-        avatar.setPlanet(this);
-
-        int x = (int) (latice.getWidth() * 0.5);
-        avatar.getPos().set(x, getHighestY(x) + 1);
     }
 
     public int getDay() {

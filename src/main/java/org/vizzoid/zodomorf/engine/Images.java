@@ -19,7 +19,8 @@ public class Images {
         ISAND, ISANDSTONE, IICE, IOBSIDIAN, IWATER, ISULFUR, 
         IMERCURY, ICORAL, ILIMESTONE, IMETEOR, ITREE, IEMPTY,
         ISTEEL, ICLOTH, IGLASS, IPAPER, IPLASTIC, ICOOLER,
-        IHEATER, IROCKET, IINSULATOR_SUIT;
+        IHEATER, IROCKET, IINSULATOR_SUIT, ICACTUS_BEAR,
+        IFOREST_DEER, IMETAL_SCORPION, IICE_FISH, IROCK_IGUANA;
 
     public static final int TILE_SIZE = 30;
 
@@ -64,6 +65,11 @@ public class Images {
         // entities
         IPLAYER = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
         IMETEOR = ofColor(new Color(98, 68, 51));
+        ICACTUS_BEAR = ofColor(new Color(98, 68, 51));
+        IFOREST_DEER = ofColor(new Color(98, 68, 51));
+        IMETAL_SCORPION = ofColor(Color.LIGHT_GRAY);
+        IICE_FISH = ofColor(Color.CYAN);
+        IROCK_IGUANA = ofColor(Color.DARK_GRAY);
     }
 
     private Images() {

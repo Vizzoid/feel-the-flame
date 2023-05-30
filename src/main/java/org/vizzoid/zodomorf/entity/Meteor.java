@@ -1,8 +1,10 @@
-package org.vizzoid.zodomorf;
+package org.vizzoid.zodomorf.entity;
 
 import org.vizzoid.utils.position.Point;
 import org.vizzoid.utils.position.Rectangle;
 import org.vizzoid.utils.position.*;
+import org.vizzoid.zodomorf.Latice;
+import org.vizzoid.zodomorf.Planet;
 import org.vizzoid.zodomorf.engine.Images;
 import org.vizzoid.zodomorf.tile.DebrisTile;
 import org.vizzoid.zodomorf.tile.Material;
@@ -73,7 +75,12 @@ public class Meteor implements Entity {
     }
 
     @Override
-    public Point getPos() {
+    public Planet getPlanet() {
+        return planet;
+    }
+
+    @Override
+    public MoveablePoint getPos() {
         return hitbox.getPos();
     }
 

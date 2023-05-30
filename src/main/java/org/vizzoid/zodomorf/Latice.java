@@ -1,6 +1,7 @@
 package org.vizzoid.zodomorf;
 
 import org.jetbrains.annotations.NotNull;
+import org.vizzoid.utils.position.Point;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -42,6 +43,10 @@ public class Latice<T> implements Iterable<T>, Serializable {
 
     public int getWidth() {
         return width;
+    }
+
+    public T get(Point p) {
+        return get(p.getX(), p.getY());
     }
 
     public T get(double x, double y) {

@@ -2,66 +2,68 @@ package org.vizzoid.zodomorf.tile;
 
 import org.vizzoid.utils.IBuilder;
 import org.vizzoid.utils.PresetMap;
+import org.vizzoid.zodomorf.engine.Images;
 import org.vizzoid.zodomorf.engine.TileInfo;
 import org.vizzoid.zodomorf.engine.TilePainter;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.function.Function;
-
-import static org.vizzoid.zodomorf.engine.Images.*;
 
 public class Material implements TilePainter {
 
     private static final PresetMap<Material> materials = new PresetMap<>();
 
     public static final Material EMPTY, FOUNDATION, COPPER_ORE,
-        SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA, DEBRIS, CLAY, SILICATE, 
-        NICKEL, ASH, GRAVEL, GOLD, SAND, SANDSTONE, ICE, OBSIDIAN, WATER, 
-        SULFUR, MERCURY, CORAL, LIMESTONE, TREE, COMPOSITE, BUILDING,
-        STEEL, CLOTH, GLASS, PAPER, PLASTIC;
+            SEDIMENTARY_ROCK, IGNEOUS_ROCK, DIRT, LAVA, DEBRIS, CLAY, SILICATE,
+            NICKEL, ASH, GRAVEL, GOLD, SAND, SANDSTONE, ICE, OBSIDIAN, WATER,
+            SULFUR, MERCURY, CORAL, LIMESTONE, TREE, COMPOSITE, BUILDING,
+            STEEL, CLOTH, GLASS, PAPER, PLASTIC, CACTUS, MEAT;
     private static final Color BACKGROUND_SHADE = new Color(0, 0, 0, 140);
 
     static {
-        EMPTY = builder("empty").gas().image(IEMPTY).build();
+        EMPTY = builder("empty").gas().build();
 
-        DEBRIS = builder("debris").health(1).image(IDEBRIS).build();
-        DIRT = builder("dirt").health(1).image(IDIRT).build();
-        ASH = builder("ash").health(1).image(IASH).build();
-        GRAVEL = builder("gravel").health(1).image(IGRAVEL).build();
-        SAND = builder("sand").health(1).image(ISAND).build();
+        DEBRIS = builder("debris").health(1).build();
+        DIRT = builder("dirt").health(1).build();
+        ASH = builder("ash").health(1).build();
+        GRAVEL = builder("gravel").health(1).build();
+        SAND = builder("sand").health(1).build();
 
-        LIMESTONE = builder("limestone").health(2).image(ILIMESTONE).build();
-        SANDSTONE = builder("sandstone").health(2).image(ISANDSTONE).build();
-        ICE = builder("ice").health(2).image(IICE).build();
-        CLAY = builder("clay").health(2).image(ICLAY).build();
-        SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).image(ISEDIMENTARY_ROCK).build();
+        LIMESTONE = builder("limestone").health(2).build();
+        SANDSTONE = builder("sandstone").health(2).build();
+        ICE = builder("ice").health(2).build();
+        CLAY = builder("clay").health(2).build();
+        SEDIMENTARY_ROCK = builder("sedimentary_rock").health(2).build();
 
-        IGNEOUS_ROCK = builder("igneous_rock").health(3).image(IIGNEOUS_ROCK).build();
-        SILICATE = builder("silicate").health(3).image(ISILICATE).build();
-        SULFUR = builder("sulfur").health(3).image(ISULFUR).build();
+        IGNEOUS_ROCK = builder("igneous_rock").health(3).build();
+        SILICATE = builder("silicate").health(3).build();
+        SULFUR = builder("sulfur").health(3).build();
 
-        COPPER_ORE = builder("copper_ore").health(4).image(ICOPPER_ORE).build();
-        NICKEL = builder("nickel").health(4).image(INICKEL).build();
-        GOLD = builder("gold").health(4).image(IGOLD).build();
-        MERCURY = builder("mercury").health(4).image(IMERCURY).build();
+        COPPER_ORE = builder("copper_ore").health(4).build();
+        NICKEL = builder("nickel").health(4).build();
+        GOLD = builder("gold").health(4).build();
+        MERCURY = builder("mercury").health(4).build();
 
-        CORAL = builder("coral").behaviorBuilder(LivingCoral::new).health(5).image(ICORAL).build();
-        TREE = builder("lumber").behaviorBuilder(TreeTile::new).health(5).image(ITREE).build();
+        CORAL = builder("coral").behaviorBuilder(LivingCoral::new).health(5).build();
+        TREE = builder("tree").behaviorBuilder(TreeTile::new).health(5).build();
+        CACTUS = builder("cactus").behaviorBuilder(Cactus::new).health(5).build();
+        MEAT = builder("meat").build();
 
-        OBSIDIAN = builder("obsidian").health(6).image(IOBSIDIAN).build();
+        OBSIDIAN = builder("obsidian").health(6).build();
 
-        WATER = builder("water").settleTicks(2).image(IWATER).liquid().build();
-        LAVA = builder("lava").settleTicks(8).image(ILAVA).liquid().build();
+        WATER = builder("water").settleTicks(2).liquid().build();
+        LAVA = builder("lava").settleTicks(8).liquid().build();
 
-        STEEL = builder("steel").health(20).image(ISTEEL).build();
-        CLOTH = builder("cloth").health(20).image(ICLOTH).build();
-        GLASS = builder("glass").health(20).image(IGLASS).build();
-        PAPER = builder("paper").health(20).image(IPAPER).build();
-        PLASTIC = builder("plastic").health(20).image(IPLASTIC).build();
+        STEEL = builder("steel").health(20).build();
+        CLOTH = builder("cloth").health(20).build();
+        GLASS = builder("glass").health(20).build();
+        PAPER = builder("paper").health(20).build();
+        PLASTIC = builder("plastic").health(20).build();
 
-        FOUNDATION = builder("foundation").health(20).image(IFOUNDATION).build();
-        COMPOSITE = builder("composite").health(Integer.MAX_VALUE).image(IEMPTY).build();
+        FOUNDATION = builder("foundation").health(20).build();
+        COMPOSITE = builder("composite").health(Integer.MAX_VALUE).build();
         BUILDING = builder("building").health(100).imageFromBehavior().build();
 
         materials.close();
@@ -205,6 +207,14 @@ public class Material implements TilePainter {
 
         public MaterialBuilder key(String key) {
             this.key = key;
+            try {
+                Field image = Images.class.getDeclaredField("I" + key.toUpperCase());
+                image.setAccessible(true);
+                image((Image) image.get(null));
+            } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+                // TODO Auto-generated catch block
+                image(Images.IDIRT);
+            }
             return this;
         }
 

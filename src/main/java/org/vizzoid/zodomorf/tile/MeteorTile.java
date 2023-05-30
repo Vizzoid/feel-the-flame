@@ -26,6 +26,10 @@ public class MeteorTile extends FallingTile {
 
     @Override
     public void tick(long ticks) {
+        if (tile.getTemperature() > 300) {
+            tile.setMaterial(Material.EMPTY);
+            return;
+        }
         super.tick(ticks);
 
         if ((breakdownTicks -= ticks) < 0) {
