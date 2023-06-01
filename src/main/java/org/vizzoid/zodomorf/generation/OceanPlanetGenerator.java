@@ -2,6 +2,7 @@ package org.vizzoid.zodomorf.generation;
 
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
+import org.vizzoid.zodomorf.entity.IceFish;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 
@@ -69,6 +70,7 @@ public class OceanPlanetGenerator implements PlanetGenerator {
         long caveSeed = r.nextLong();
         long oreSeed = r.nextLong();
         long rockSeed = r.nextLong();
+        long animalSeed = r.nextLong();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0, caveLevel = caveHeights[x]; y < caveLevel; y++) {
@@ -86,6 +88,10 @@ public class OceanPlanetGenerator implements PlanetGenerator {
                 if (noise > 0.1) {
                     if (noise > (0.8 - (((PlanetGenerator.super.MAX_HEIGHT() - (double) y) * 0.2) / PlanetGenerator.super.MAX_HEIGHT()))) tile.setMaterial(set.sea());
                     else tile.setMaterial(set.caveAir());
+
+                    double animalNoise = generation(animalSeed, x, y, ANIMAL_NOISE());
+                    if (animalNoise > 0.8) new IceFish(planet, x, y);
+
                     tile.setBackground(rock);
                 }
                 else tile.setMaterial(rock);

@@ -1,7 +1,9 @@
 package org.vizzoid.zodomorf.generation;
 
+import org.vizzoid.utils.Optional;
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
+import org.vizzoid.zodomorf.entity.EntityType;
 import org.vizzoid.zodomorf.tile.BoundaryTile;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
@@ -23,6 +25,10 @@ public interface PlanetGenerator {
     default double CAVE_FREQUENCY() { return 0.125;}
     default double ROCK_FREQUENCY() { return 0.15;}
     default double ORE_FREQUENCY() { return 0.125;}
+    default double PLANT_NOISE() { return 1;}
+    default double ANIMAL_NOISE() { return 1;}
+    default Optional<Material> plant() { return Optional.empty();}
+    default Optional<EntityType> animal() { return Optional.empty();}
 
     PlanetTileSet set();
 
@@ -144,6 +150,8 @@ public interface PlanetGenerator {
         long caveSeed = r.nextLong();
         long oreSeed = r.nextLong();
         long rockSeed = r.nextLong();
+        long plantSeed = r.nextLong();
+        long animalSeed = r.nextLong();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0, caveLevel = caveHeights[x]; y < caveLevel; y++) {
@@ -159,8 +167,24 @@ public interface PlanetGenerator {
 
                 double noise = generation(caveSeed, x, y, CAVE_FREQUENCY());
                 if (noise > 0.1) {
-                    if (noise > (0.8 - (((MAX_HEIGHT() - (double) y) * 0.2) / MAX_HEIGHT()))) tile.setMaterial(set.sea());
-                    else tile.setMaterial(set.caveAir());
+                    if (y < IGNEOUS_HEIGHT()) {
+                        if (noise > (0.8 - (((MAX_HEIGHT() - (double) y) * 0.2) / MAX_HEIGHT()))) tile.setMaterial(set.sea());
+                        else tile.setMaterial(set.caveAir());
+
+                        Optional<Material> plant = plant();
+                        if (plant.isPresent()) {
+                            double plantNoise = generation(plantSeed, x, y, PLANT_NOISE());
+                            if (plantNoise > 0.8) tile.setMiddleGround(plant.getValue());
+                        }
+
+                        Optional<EntityType> animal = animal();
+                        if (animal.isPresent()) {
+                            double animalNoise = generation(animalSeed, x, y, ANIMAL_NOISE());
+                            if (animalNoise > 0.8) animal.getValue().create(planet, x, y);
+                        }
+                    } else {
+                        tile.setMaterial(set.caveAir());
+                    }
                     tile.setBackground(rock);
                 }
                 else tile.setMaterial(rock);

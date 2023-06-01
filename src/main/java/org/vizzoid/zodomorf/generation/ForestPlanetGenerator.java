@@ -2,6 +2,7 @@ package org.vizzoid.zodomorf.generation;
 
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
+import org.vizzoid.zodomorf.entity.ForestDeer;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 
@@ -90,6 +91,7 @@ public class ForestPlanetGenerator implements PlanetGenerator {
         long oreSeed = r.nextLong();
         long rockSeed = r.nextLong();
         long treeSeed = r.nextLong();
+        long animalSeed = r.nextLong();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0, caveLevel = caveHeights[x]; y < caveLevel; y++) {
@@ -114,6 +116,9 @@ public class ForestPlanetGenerator implements PlanetGenerator {
 
                         double treeNoise = generation(treeSeed, x, y, TREE_NOISE);
                         if (treeNoise > 0.8) tile.setMiddleGround(Material.TREE);
+
+                        double forestDeerNoise = generation(animalSeed, x, y, TREE_NOISE);
+                        if (forestDeerNoise > 0.8) new ForestDeer(planet, x, y);
                     } else {
                         tile.setMaterial(set.caveAir());
                     }

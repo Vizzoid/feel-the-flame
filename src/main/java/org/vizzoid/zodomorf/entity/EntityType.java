@@ -1,14 +1,14 @@
 package org.vizzoid.zodomorf.entity;
 
-import org.vizzoid.utils.IBuilder;
 import org.vizzoid.utils.PresetMap;
+import org.vizzoid.utils.position.MoveablePoint;
 import org.vizzoid.zodomorf.Planet;
-import org.vizzoid.zodomorf.engine.Images;
+import org.vizzoid.zodomorf.ZBuilder;
 import org.vizzoid.zodomorf.tile.Material;
 
 import java.awt.*;
-import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.function.BiFunction;
 
 import static org.vizzoid.zodomorf.entity.Lifespan.days;
 import static org.vizzoid.zodomorf.entity.Reproduction.*;
@@ -20,11 +20,13 @@ public class EntityType {
     public static final EntityType CACTUS_BEAR, FOREST_DEER, METAL_SCORPION, ICE_FISH, ROCK_IGUANA;
 
     static {
-        CACTUS_BEAR = builder("cactus_bear").foodType(Material.CACTUS).deathDrop(new EntityDrop(Material.MEAT, 50)).reproduction(naturalEgg(3 * Planet.TIME_IN_DAY, Material.SULFUR)).build();
-        FOREST_DEER = builder("forest_deer").foodType(Material.TREE).lifespan(days(20)).deathDrop(new EntityDrop(Material.MEAT, 400)).reproduction(natural(15 * Planet.TIME_IN_DAY, ForestDeer::new)).build();
-        METAL_SCORPION = builder("metal_scorpion").foodType(Material.IGNEOUS_ROCK).deathDrop(new EntityDrop(Material.STEEL, 15)).reproduction(natural(3000, MetalScorpion::new)).build();
-        ICE_FISH = builder("ice_fish").foodType(Material.CORAL).lifespan(days(1)).deathDrop(new EntityDrop(Material.MEAT, 20)).reproduction(eat(12000, IceFish::new)).build();
-        ROCK_IGUANA = builder("rock_iguana").foodType(Material.LAVA).lifespan(days(10)).eatDrop(new EntityDrop(Material.IGNEOUS_ROCK, 1)).reproduction(new RockIguanaReproduction()).build();
+        CACTUS_BEAR = builder("cactus_bear").entity(CactusBear::new).foodType(Material.CACTUS).deathDrop(new EntityDrop(Material.MEAT, 50)).reproduction(naturalEgg(3 * Planet.TIME_IN_DAY, Material.SULFUR)).hitbox(3, 2).build();
+        FOREST_DEER = builder("forest_deer").entity(ForestDeer::new).foodType(Material.TREE).lifespan(days(20)).deathDrop(new EntityDrop(Material.MEAT, 400)).reproduction(natural(15 * Planet.TIME_IN_DAY, ForestDeer::new)).hitbox(3, 2).build();
+        METAL_SCORPION = builder("metal_scorpion").entity(MetalScorpion::new).foodType(Material.IGNEOUS_ROCK).deathDrop(new EntityDrop(Material.STEEL, 15)).reproduction(natural(3000, MetalScorpion::new)).hitbox(1, 1).build();
+        ICE_FISH = builder("ice_fish").entity(IceFish::new).foodType(Material.CORAL).lifespan(days(1)).deathDrop(new EntityDrop(Material.MEAT, 20)).reproduction(eat(12000, IceFish::new)).hitbox(1, 1).build();
+        ROCK_IGUANA = builder("rock_iguana").entity(RockIguana::new).foodType(Material.LAVA).lifespan(days(10)).eatDrop(new EntityDrop(Material.IGNEOUS_ROCK, 1)).reproduction(new RockIguanaReproduction()).hitbox(2, 1).build();
+
+        types.close();
     }
 
     private static EntityTypeBuilder builder(String key) {
@@ -60,6 +62,7 @@ public class EntityType {
     private final Reproduction reproduction;
     private final double width;
     private final double height;
+    private final BiFunction<Planet, MoveablePoint, Entity> entity;
 
     public EntityType(EntityTypeBuilder builder) {
         this.key = builder.key;
@@ -71,6 +74,17 @@ public class EntityType {
         this.reproduction = builder.reproduction;
         this.width = builder.width;
         this.height = builder.height;
+        this.entity = builder.entity;
+
+        types.put(key, this);
+    }
+
+    public Entity create(Planet planet, double x, double y) {
+        return create(planet, new MoveablePoint(x, y));
+    }
+
+    public Entity create(Planet planet, MoveablePoint pos) {
+        return entity.apply(planet, pos);
     }
 
     public EntityDrop getDeathDrop() {
@@ -109,10 +123,8 @@ public class EntityType {
         return height;
     }
 
-    private static class EntityTypeBuilder implements IBuilder<EntityType> {
+    private static class EntityTypeBuilder extends ZBuilder<EntityTypeBuilder, EntityType> {
 
-        private String key = "empty";
-        private Image image;
         private Material foodType = Material.EMPTY;
         private Lifespan lifespan = Lifespan.INFINITE;
         private EntityDrop deathDrop = EntityDrop.NONE;
@@ -120,6 +132,12 @@ public class EntityType {
         private Reproduction reproduction = Reproduction.NONE;
         private double width;
         private double height;
+        private BiFunction<Planet, MoveablePoint, Entity> entity;
+
+        public EntityTypeBuilder entity(BiFunction<Planet, MoveablePoint, Entity> entity) {
+            this.entity = entity;
+            return this;
+        }
 
         public EntityTypeBuilder width(double width) {
             this.width = width;
@@ -157,24 +175,6 @@ public class EntityType {
 
         public EntityTypeBuilder reproduction(Reproduction reproduction) {
             this.reproduction = reproduction;
-            return this;
-        }
-
-        public EntityTypeBuilder image(Image image) {
-            this.image = image;
-            return this;
-        }
-
-        public EntityTypeBuilder key(String key) {
-            this.key = key;
-            try {
-                Field image = Images.class.getDeclaredField("I" + key.toUpperCase());
-                image.setAccessible(true);
-                image((Image) image.get(null));
-            } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                image(Images.IDIRT);
-            }
             return this;
         }
 

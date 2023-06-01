@@ -16,14 +16,15 @@ import java.util.concurrent.Executors;
 public class PlayerPathfinder implements Pathfinder {
 
     private final static ExecutorService findThread = Executors.newCachedThreadPool();
-    private final static Direction[] directions = new Direction[] {Direction.RIGHT, Direction.UP_RIGHT, Direction.DOWN_RIGHT, Direction.LEFT, Direction.UP_LEFT, Direction.DOWN_LEFT};
+    private final Direction[] directions;
     private final Entity entity;
     private List<Point> path = List.of();
     private Point end = new ImmoveablePoint(0, 0);
     private int untilPath = 0;
     private boolean pathfinding = false;
 
-    public PlayerPathfinder(Entity entity) {
+    public PlayerPathfinder(Direction[] directions, Entity entity) {
+        this.directions = directions;
         this.entity = entity;
     }
 

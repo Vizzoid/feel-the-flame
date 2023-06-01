@@ -1,13 +1,11 @@
 package org.vizzoid.zodomorf.tile;
 
-import org.vizzoid.utils.IBuilder;
 import org.vizzoid.utils.PresetMap;
-import org.vizzoid.zodomorf.engine.Images;
+import org.vizzoid.zodomorf.ZBuilder;
 import org.vizzoid.zodomorf.engine.TileInfo;
 import org.vizzoid.zodomorf.engine.TilePainter;
 
 import java.awt.*;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.function.Function;
 
@@ -46,9 +44,9 @@ public class Material implements TilePainter {
         GOLD = builder("gold").health(4).build();
         MERCURY = builder("mercury").health(4).build();
 
-        CORAL = builder("coral").behaviorBuilder(LivingCoral::new).health(5).build();
-        TREE = builder("tree").behaviorBuilder(TreeTile::new).health(5).build();
-        CACTUS = builder("cactus").behaviorBuilder(Cactus::new).health(5).build();
+        CORAL = builder("coral").behaviorBuilder(LivingCoral::new).health(5).plant().build();
+        TREE = builder("tree").behaviorBuilder(TreeTile::new).health(5).plant().build();
+        CACTUS = builder("cactus").behaviorBuilder(Cactus::new).health(5).plant().build();
         MEAT = builder("meat").build();
 
         OBSIDIAN = builder("obsidian").health(6).build();
@@ -68,6 +66,7 @@ public class Material implements TilePainter {
 
         materials.close();
     }
+
 
     private static MaterialBuilder builder(String key) {
         return new MaterialBuilder().key(key);
@@ -100,6 +99,7 @@ public class Material implements TilePainter {
     private final int settleTicks;
     private final Function<Tile, TileBehavior> behaviorBuilder;
     private final boolean imageFromBehavior;
+    private final boolean plant;
 
     public Material(MaterialBuilder builder) {
         this.image = builder.image;
@@ -109,6 +109,7 @@ public class Material implements TilePainter {
         this.settleTicks = builder.settleTicks;
         this.behaviorBuilder = builder.behaviorBuilder;
         this.imageFromBehavior = builder.imageFromBehavior;
+        this.plant = builder.plant;
 
         materials.put(key, this);
     }
@@ -180,18 +181,21 @@ public class Material implements TilePainter {
         info.graphics.fillRect(info.screenX, info.screenY, info.squareSize, info.squareSize);
     }
 
-    private static class MaterialBuilder implements IBuilder<Material> {
+    public boolean isPlant() {
+        return plant;
+    }
 
-        private String key = "empty";
-        private Image image;
+    private static class MaterialBuilder extends ZBuilder<MaterialBuilder, Material> {
+
         private MaterialType type = MaterialType.SOLID;
         private int health = 1;
         private int settleTicks = -1;
         private Function<Tile, TileBehavior> behaviorBuilder = t -> TileBehavior.EMPTY;
         private boolean imageFromBehavior = false;
+        private boolean plant = false;
 
-        public MaterialBuilder image(Image image) {
-            this.image = image;
+        public MaterialBuilder plant() {
+            this.plant = true;
             return this;
         }
 
@@ -203,19 +207,6 @@ public class Material implements TilePainter {
         public MaterialBuilder liquid() {
             this.type = MaterialType.LIQUID;
             return behaviorBuilder(Fluid::new);
-        }
-
-        public MaterialBuilder key(String key) {
-            this.key = key;
-            try {
-                Field image = Images.class.getDeclaredField("I" + key.toUpperCase());
-                image.setAccessible(true);
-                image((Image) image.get(null));
-            } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                image(Images.IDIRT);
-            }
-            return this;
         }
 
         public MaterialBuilder health(int health) {

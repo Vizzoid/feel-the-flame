@@ -1,13 +1,10 @@
 package org.vizzoid.zodomorf.building;
 
-import org.vizzoid.zodomorf.engine.Images;
-import org.vizzoid.zodomorf.tile.Material;
-
-import java.awt.*;
+import org.vizzoid.zodomorf.tile.Tile;
 
 public class Cooler extends Building {
-    public Cooler() {
-        super(3, 2);
+    public Cooler(Tile tile) {
+        super(tile);
     }
 
     @Override
@@ -18,22 +15,7 @@ public class Cooler extends Building {
     }
 
     @Override
-    public Material getMaterial() {
-        return Material.GOLD;
-    }
-
-    @Override
-    public int getCost() {
-        return 20;
-    }
-
-    @Override
-    public String getName() {
-        return "Cooler";
-    }
-
-    @Override
-    public Image getImage() {
-        return Images.ICOOLER;
+    public BuildingType getType() {
+        return BuildingType.COOLER;
     }
 }

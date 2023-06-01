@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -74,6 +75,17 @@ public class Images {
 
     private Images() {
 
+    }
+
+    public static Image fromKey(String key) {
+        try {
+            Field image = Images.class.getDeclaredField("I" + key.toUpperCase());
+            image.setAccessible(true);
+            return (Image) image.get(null);
+        } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            return Images.IDIRT;
+        }
     }
 
     public static String getJarPath() {

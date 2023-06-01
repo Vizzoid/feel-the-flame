@@ -1,7 +1,7 @@
 package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.position.*;
-import org.vizzoid.zodomorf.building.Buildable;
+import org.vizzoid.zodomorf.building.BuildingType;
 import org.vizzoid.zodomorf.building.InsulatorSuit;
 import org.vizzoid.zodomorf.engine.IntPoint;
 import org.vizzoid.zodomorf.engine.LaticeCamera;
@@ -37,7 +37,7 @@ public class Avatar implements LaticeCamera, Serializable {
     private transient boolean clicking = false;
     private final Map<String, Integer> storage = new HashMap<>();
     private transient Tile clickTile;
-    private transient Buildable buildable = Buildable.EMPTY;
+    private transient BuildingType buildable = BuildingType.EMPTY;
     private transient Material miningMiddleGround = Material.EMPTY;
     private transient InsulatorSuit suit = null;
 
@@ -276,7 +276,7 @@ public class Avatar implements LaticeCamera, Serializable {
 
         if (clicking) {
             clickTile = getMouseTileRel();
-            if (!buildable.isEmpty()) {
+            if (buildable != BuildingType.EMPTY) {
                 if (!buildable.canPlace(clickTile)) return;
                 buildable.place(clickTile);
                 return;
@@ -317,11 +317,11 @@ public class Avatar implements LaticeCamera, Serializable {
         return planet.getTileLatice().get(((int) pos.getX()) + mouseTile.getXInt(), ((int) pos.getY()) + mouseTile.getYInt());
     }
 
-    public Buildable getBuildable() {
+    public BuildingType getBuildable() {
         return buildable;
     }
 
-    public void setBuildable(Buildable buildable) {
+    public void setBuildable(BuildingType buildable) {
         this.buildable = buildable;
     }
 
@@ -408,5 +408,9 @@ public class Avatar implements LaticeCamera, Serializable {
 
     public void setStorage(Material material, int i) {
         storage.put(material.getKey(), i);
+    }
+
+    public void incrementStorage(Material material) {
+        setStorage(material, getStorage(material) + 1);
     }
 }

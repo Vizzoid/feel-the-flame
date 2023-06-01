@@ -4,6 +4,7 @@ import org.vizzoid.utils.Optional;
 import org.vizzoid.utils.position.MoveablePoint;
 import org.vizzoid.utils.position.Point;
 import org.vizzoid.zodomorf.entity.Animal;
+import org.vizzoid.zodomorf.entity.path.Direction;
 import org.vizzoid.zodomorf.entity.path.PlayerPathfinder;
 import org.vizzoid.zodomorf.tile.Tile;
 
@@ -19,7 +20,11 @@ public class AnimalAI {
     public AnimalAI(Animal animal) {
         this.animal = animal;
         resetIdleWalk();
-        this.pathfinder = new PlayerPathfinder(animal);
+        this.pathfinder = new PlayerPathfinder(getDirections(), animal);
+    }
+
+    protected Direction[] getDirections() {
+        return new Direction[] {Direction.RIGHT, Direction.UP_RIGHT, Direction.DOWN_RIGHT, Direction.LEFT, Direction.UP_LEFT, Direction.DOWN_LEFT};
     }
 
     public void resetIdleWalk() {

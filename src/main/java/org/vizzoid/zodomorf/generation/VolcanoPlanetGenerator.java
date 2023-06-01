@@ -1,7 +1,9 @@
 package org.vizzoid.zodomorf.generation;
 
+import org.vizzoid.utils.Optional;
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
+import org.vizzoid.zodomorf.entity.EntityType;
 import org.vizzoid.zodomorf.tile.LivingCoral;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
@@ -16,6 +18,12 @@ public class VolcanoPlanetGenerator implements PlanetGenerator {
     private static final PlanetTileSet VOLCANO = new PlanetTileSet().sea(Material.LAVA).dirt(Material.LAVA).crust(Material.OBSIDIAN).mantle(Material.SULFUR).metal(Material.MERCURY);
     public static final int VOLCANO_SIZE = 129;
     private static final int VOLCANO_DIAMETER = VOLCANO_SIZE + VOLCANO_SIZE;
+    private static final Optional<EntityType> ROCK_IGUANA = Optional.of(EntityType.ROCK_IGUANA);
+
+    @Override
+    public Optional<EntityType> animal() {
+        return ROCK_IGUANA;
+    }
 
     @Override
     public PlanetTileSet set() {

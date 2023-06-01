@@ -6,9 +6,9 @@ import org.vizzoid.utils.position.MoveablePoint;
 import org.vizzoid.utils.position.Point;
 import org.vizzoid.utils.position.Rectangle;
 import org.vizzoid.zodomorf.Avatar;
-import org.vizzoid.zodomorf.entity.Entity;
 import org.vizzoid.zodomorf.Planet;
-import org.vizzoid.zodomorf.building.Buildable;
+import org.vizzoid.zodomorf.building.BuildingType;
+import org.vizzoid.zodomorf.entity.Entity;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -26,10 +26,10 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
     private final int shopX;
 
     private static class ShopItem {
-        private final Buildable buildable;
+        private final BuildingType buildable;
         private final Rectangle rectangle;
 
-        private ShopItem(Buildable buildable, Rectangle rectangle) {
+        private ShopItem(BuildingType buildable, Rectangle rectangle) {
             this.buildable = buildable;
             this.rectangle = rectangle;
         }
@@ -44,11 +44,11 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
         this.planet = planet;
         this.tileCenter = new IntPoint(centerStart.getX(), centerStart.getY());
 
-        Buildable[] array = Buildable.array();
+        BuildingType[] array = BuildingType.array();
         int width = 60;
         items = new ShopItem[array.length];
         for (int i = 0; i < array.length; i++) {
-            Buildable buildable = array[i];
+            BuildingType buildable = array[i];
 
             int x = (int) (width * (((i % 2 * 1.35)) + 0.5));
             int y = (int) (((i / 2) + 0.5) * width);
@@ -77,7 +77,7 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
             graphics.setColor(Color.WHITE);
             graphics.drawString(item.buildable.getName(), x, y + Images.TILE_SIZE + 10);
             graphics.setColor(new Color(255, 255, 255, 50));
-            if (item.buildable.isSame(player.getBuildable())) graphics.fillRect(x, y, (int) item.rectangle.getWidth(), (int) item.rectangle.getHeight());
+            if (item.buildable == player.getBuildable()) graphics.fillRect(x, y, (int) item.rectangle.getWidth(), (int) item.rectangle.getHeight());
             else graphics.drawRect(x, y, (int) item.rectangle.getWidth(), (int) item.rectangle.getHeight());
         }
 
@@ -165,8 +165,8 @@ public class PlanetPainter extends LaticePainter implements InputPainter {
                 if (x < shopX) {
                     for (ShopItem item : items) {
                         if (item.rectangle.intersects(new ImmoveablePoint(x, y))) {
-                            if (avatar.getBuildable().isSame(item.buildable)) {
-                                avatar.setBuildable(Buildable.EMPTY);
+                            if (avatar.getBuildable() == item.buildable) {
+                                avatar.setBuildable(BuildingType.EMPTY);
                                 return;
                             }
                             avatar.setBuildable(item.buildable);
