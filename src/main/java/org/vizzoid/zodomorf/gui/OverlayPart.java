@@ -1,4 +1,4 @@
-package org.vizzoid.zodomorf.building;
+package org.vizzoid.zodomorf.gui;
 
 import org.vizzoid.utils.position.ImmoveablePoint;
 import org.vizzoid.utils.position.Point;
@@ -22,11 +22,11 @@ public abstract class OverlayPart {
     }
 
     public void tryPress(MouseEvent e) {
-        if (isInside(e)) press();
+        if (isInside(e)) clickPress();
     }
 
     public void tryRelease(MouseEvent e) {
-        if (isInside(e)) release();
+        if (isInside(e)) clickRelease();
     }
 
     public void tryPress(KeyEvent e) {
@@ -49,11 +49,11 @@ public abstract class OverlayPart {
 
     }
 
-    public void press() {
+    public void clickPress() {
         pressed = true;
     }
 
-    public void release() {
+    public void clickRelease() {
         pressed = false;
     }
 

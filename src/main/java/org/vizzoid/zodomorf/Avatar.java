@@ -5,6 +5,7 @@ import org.vizzoid.zodomorf.building.BuildingType;
 import org.vizzoid.zodomorf.building.InsulatorSuit;
 import org.vizzoid.zodomorf.engine.IntPoint;
 import org.vizzoid.zodomorf.engine.LaticeCamera;
+import org.vizzoid.zodomorf.entity.Hitbox;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 
@@ -28,7 +29,7 @@ public class Avatar implements LaticeCamera, Serializable {
     private double food = 30000;
     private double temperature = 100;
     private transient boolean warmingUp = false;
-    private final DynamicRectangle hitbox = new DynamicRectangle(new MoveablePoint(), HITBOX_WIDTH, HITBOX_HEIGHT, new MoveablePoint());
+    private final Hitbox hitbox = new Hitbox(new MoveablePoint(), HITBOX_WIDTH, HITBOX_HEIGHT, new MoveablePoint());
     private transient boolean jumping;
     private transient boolean movingLeft, movingRight;
     private transient int miningTileHealth;
@@ -386,7 +387,7 @@ public class Avatar implements LaticeCamera, Serializable {
         return temperature;
     }
 
-    public DynamicRectangle getHitbox() {
+    public Hitbox getHitbox() {
         return hitbox;
     }
 

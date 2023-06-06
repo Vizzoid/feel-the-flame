@@ -25,6 +25,7 @@ public class TickTimer {
     public TickTimer(Runnable runnable, IntDecider maxUntil) {
         this.runnable = runnable;
         this.maxUntil = maxUntil;
+        resetTimer();
     }
 
     public void resetTimer() {
@@ -32,10 +33,10 @@ public class TickTimer {
     }
 
     public void tick(long ticks) {
-        if ((until -= ticks) < 0) {
+        //if ((until -= ticks) < 0) {
             resetTimer();
             runnable.run();
-        }
+        //}
     }
 
 }

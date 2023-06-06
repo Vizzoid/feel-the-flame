@@ -7,7 +7,6 @@ import org.vizzoid.zodomorf.tile.Tile;
 public class PlanetLatice extends Latice<Tile> {
     public PlanetLatice(Planet planet) {
         super(500, 250);
-        setDefaultValue(Tile.EMPTY);
         fill((x, y) -> new Tile(planet, Material.EMPTY, x, y));
         int width = getWidth();
         int height = getHeight();
@@ -30,6 +29,11 @@ public class PlanetLatice extends Latice<Tile> {
     public void set(int x, int y, Tile tile) {
         if (x == 0) return;
         if (y == 0) return;
-        super.set(x, y, tile);
+        super.set(Math.floorMod(x, width), Math.floorMod(y, height), tile);
+    }
+
+    @Override
+    public Tile get(int x, int y) {
+        return super.get(Math.floorMod(x, width), Math.floorMod(y, height));
     }
 }

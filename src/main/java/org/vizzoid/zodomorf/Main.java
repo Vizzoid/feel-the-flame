@@ -2,32 +2,116 @@ package org.vizzoid.zodomorf;
 
 import org.vizzoid.utils.engine.DefaultEngine;
 import org.vizzoid.zodomorf.engine.PlanetEngine;
-import org.vizzoid.zodomorf.generation.*;
+import org.vizzoid.zodomorf.generation.LandPlanetGenerator;
+import org.vizzoid.zodomorf.generation.OpenSimplex2S;
+import org.vizzoid.zodomorf.tile.Material;
+import org.vizzoid.zodomorf.tile.Tile;
+import org.vizzoid.zodomorf.tile.cactus.Cactus;
+import org.vizzoid.zodomorf.tile.cactus.CactusLeg;
+import org.vizzoid.zodomorf.tile.cactus.SideCactus;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
+    private static class FakeCactus extends Cactus {
+
+        @Override
+        protected int minGrowth() {
+            return 0;
+        }
+
+        @Override
+        protected int maxGrowth() {
+            return 1;
+        }
+
+        public FakeCactus(Tile tile) {
+            super(tile);
+        }
+
+        @Override
+        public void sideCactus(Tile right) {
+            //right.setMiddleGroundBehavior(new FakeSideCactus(right));
+        }
+
+        @Override
+        public void cactus(Tile above) {
+            above.setMiddleGround(Material.CACTUS, false);
+            FakeCactus newCactus = new FakeCactus(above);
+            newCactus.canGrowRight = canGrowRight;
+            newCactus.canGrowLeft = canGrowLeft;
+            above.setMiddleGroundBehavior(newCactus);
+        }
+    }
+
+    private static class FakeSideCactus extends SideCactus {
+
+        @Override
+        protected int minGrowth() {
+            return 0;
+        }
+
+        @Override
+        protected int maxGrowth() {
+            return 1;
+        }
+
+        public FakeSideCactus(Tile tile) {
+            super(tile);
+        }
+
+        @Override
+        public void cactusLeg(Tile left) {
+            left.setMiddleGroundBehavior(new FakeCactusLeg(left));
+        }
+    }
+
+    private static class FakeCactusLeg extends CactusLeg {
+
+        @Override
+        protected int minGrowth() {
+            return 0;
+        }
+
+        @Override
+        protected int maxGrowth() {
+            return 1;
+        }
+
+        public FakeCactusLeg(Tile tile) {
+            super(tile);
+        }
+
+        @Override
+        public void cactusLeg(Tile left) {
+            left.setMiddleGroundBehavior(new FakeCactusLeg(left));
+        }
+    }
+
     public static final boolean DEBUG = true;
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+    public static void main(String[] args) throws Exception {
 
         boolean visual = false;
 
         if (!visual) {
             Game game = new Game();/*
-            Planet barren = game.generatePlanet(new BarrenPlanetGenerator());*/
-            Planet land = game.generatePlanet(new LandPlanetGenerator());/*
+            Planet barren = game.generatePlanet(new BarrenPlanetGenerator());
+            */Planet land = game.generatePlanet(new LandPlanetGenerator());/*
             Planet forest = game.generatePlanet(new ForestPlanetGenerator());
             Planet desert = game.generatePlanet(new DesertPlanetGenerator());
             Planet ocean = game.generatePlanet(new OceanPlanetGenerator());
             Planet volcano = game.generatePlanet(new VolcanoPlanetGenerator());*/
             game.setPlanet(land);
+
             PlanetEngine.start(game);
+            Tile tile = game.getAvatar().getTile();
+            tile.setMiddleGround(Material.CACTUS);
+            tile.setMiddleGroundBehavior(new FakeCactus(tile));
             /*new PlanetEngine(game) {
                 @Override
                 public void newPlanetPainter() {
@@ -85,7 +169,7 @@ public class Main {
                     throw new RuntimeException(e);
                 }
             }));*/
-            return;
+            throw new Exception();
         }
 
         DefaultEngine engine = new DefaultEngine() {

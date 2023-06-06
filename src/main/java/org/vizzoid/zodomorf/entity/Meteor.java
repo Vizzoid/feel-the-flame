@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class Meteor implements Entity {
 
-    private final DynamicRectangle hitbox = new DynamicRectangle(Point.EMPTY, 1, 1, Point.EMPTY);
+    private final Hitbox hitbox = new Hitbox(Point.EMPTY, 1, 1, Point.EMPTY);
     private final Planet planet;
 
     public Meteor(Planet planet) {

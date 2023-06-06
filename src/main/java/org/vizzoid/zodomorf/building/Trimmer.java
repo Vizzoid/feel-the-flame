@@ -13,13 +13,14 @@ public class Trimmer extends Building {
     }
 
     public void trim() {
-        iterateWidth(t -> {
-            Tile below = t.below();
-            if (below.getMiddleGround().isPlant()) {
-                below.getPlanet().getAvatar().incrementStorage(below.getMaterial());
-                below.setMiddleGround(Material.EMPTY);
-            }
-        });
+        iterateWidth(this::trimTile);
+    }
+
+    public void trimTile(Tile tile) {
+        Tile below = tile.below();
+        if (!below.getMiddleGround().isPlant()) return;
+        below.getPlanet().getAvatar().incrementStorage(below.getMaterial());
+        below.setMiddleGround(Material.EMPTY);
     }
 
     @Override

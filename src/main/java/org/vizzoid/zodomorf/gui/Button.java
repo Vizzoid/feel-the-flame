@@ -1,4 +1,4 @@
-package org.vizzoid.zodomorf.building;
+package org.vizzoid.zodomorf.gui;
 
 import org.vizzoid.utils.position.Rectangle;
 
@@ -18,9 +18,9 @@ public class Button extends OverlayPart {
         this.runnable = runnable;
     }
 
-    public void press() {
+    public void clickPress() {
         if (!pressed) runnable.run();
-        super.press();
+        super.clickPress();
     }
 
     @Override

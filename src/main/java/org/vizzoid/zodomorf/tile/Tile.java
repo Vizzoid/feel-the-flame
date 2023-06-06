@@ -18,133 +18,6 @@ public class Tile implements TilePainter, Serializable {
     @Serial
     private static final long serialVersionUID = 8582575836241128646L;
     private static final Color TILE_BREAKING = new Color(255, 255, 255, 118);
-    public static final Tile EMPTY = new Tile(0, 0) {
-        @Override
-        public void setBackground(Material background) {
-        }
-
-        @Override
-        public void setMaterial(Material material) {
-        }
-
-        @Override
-        public void setTemperature(double temperature) {
-        }
-
-        @Override
-        public void tick(long ticks) {
-        }
-
-        @Override
-        public void paint(TileInfo info) {
-
-        }
-
-        @Override
-        public void swap(Tile tile) {
-
-        }
-
-        @Override
-        public void updateNeighbors() {
-
-        }
-
-        @Override
-        public void update() {
-
-        }
-
-        @Override
-        public boolean canMoveInto() {
-            return true;
-        }
-
-        @Override
-        public Material getBackground() {
-            return Material.EMPTY;
-        }
-
-        @Override
-        public boolean isBoundary() {
-            return false;
-        }
-
-        @Override
-        public Material getMiddleGround() {
-            return Material.EMPTY;
-        }
-
-        @Override
-        public boolean isLiquid() {
-            return false;
-        }
-
-        @Override
-        public double getTemperature() {
-            return planet.getTemperature();
-        }
-
-        @Override
-        public TileBehavior getBehavior() {
-            return TileBehavior.EMPTY;
-        }
-
-        @Override
-        public TileBehavior getMiddleGroundBehavior() {
-            return TileBehavior.EMPTY;
-        }
-
-        @Override
-        public Material getMaterial() {
-            return Material.EMPTY;
-        }
-
-        @Override
-        public void setMiddleGroundBehavior(TileBehavior middleGroundBehavior) {
-
-        }
-
-        @Override
-        public void setMiddleGround(Material middleGround, boolean updateBehavior) {
-
-        }
-
-        @Override
-        public void setMiddleGround(Material middleGround) {
-
-        }
-
-        @Override
-        public void setBehavior(TileBehavior behavior) {
-
-        }
-
-        @Override
-        public void setMaterial(Material material, boolean updateBehavior) {
-
-        }
-
-        @Override
-        public void setMaterial(Material material, boolean updateBehavior, boolean updateBackground) {
-
-        }
-
-        @Override
-        public void setPlanet(Planet planet) {
-
-        }
-
-        @Override
-        public int getHealth() {
-            return Integer.MAX_VALUE;
-        }
-
-        @Override
-        public void transitionTemperature(Tile tile) {
-
-        }
-    };
 
     protected transient Planet planet;
     protected double temperature;
@@ -387,6 +260,9 @@ public class Tile implements TilePainter, Serializable {
     }
 
     public Tile relative(int x, int y) {
+        if (planet == null) {
+            throw new NullPointerException(pos.toString() + ", " + getClass().getName());
+        }
         return planet.getTileLatice().get(pos.getX() + x, pos.getY() + y);
     }
 

@@ -4,6 +4,8 @@ import org.vizzoid.utils.PresetMap;
 import org.vizzoid.zodomorf.Avatar;
 import org.vizzoid.zodomorf.Main;
 import org.vizzoid.zodomorf.ZBuilder;
+import org.vizzoid.zodomorf.building.power.Battery;
+import org.vizzoid.zodomorf.building.power.Wire;
 import org.vizzoid.zodomorf.tile.Material;
 import org.vizzoid.zodomorf.tile.Tile;
 import org.vizzoid.zodomorf.tile.TilePlacement;
@@ -16,7 +18,7 @@ public class BuildingType {
     private static final PresetMap<BuildingType> types = new PresetMap<>();
 
     public static final BuildingType EMPTY, COMFORTABLE_ROCKET, COOLER, HEATER, INSULATOR_SUIT, ROCKET,
-            TRIMMER, FOUNDATION, WALL;
+            TRIMMER, FOUNDATION, WALL, BATTERY, WIRE;
 
     static {
         EMPTY = builder("empty").unplaceable().build();
@@ -28,6 +30,10 @@ public class BuildingType {
         TRIMMER = builder("trimmer").cost(Material.COPPER_ORE, 20).hitbox(5, 7).building(Trimmer::new, false).build();
         FOUNDATION = builder("foundation").cost(Material.CLAY, 2).tile(Material.FOUNDATION).build();
         WALL = builder("wall").cost(Material.CLAY, 2).form(new BuildingForm.TileBuild(Material.FOUNDATION, TilePlacement.BACK)).build();
+
+        // power
+        BATTERY = builder("battery").cost(Material.GOLD, 15).hitbox(2, 3).building(Battery::new).build();
+        WIRE = builder("wire").cost(Material.COPPER_ORE, 1).building(Wire::new).build();
 
         types.close();
     }

@@ -4,6 +4,7 @@ import org.vizzoid.utils.PresetMap;
 import org.vizzoid.zodomorf.ZBuilder;
 import org.vizzoid.zodomorf.engine.TileInfo;
 import org.vizzoid.zodomorf.engine.TilePainter;
+import org.vizzoid.zodomorf.tile.cactus.Cactus;
 
 import java.awt.*;
 import java.util.Collection;

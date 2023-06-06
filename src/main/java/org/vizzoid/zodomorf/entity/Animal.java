@@ -1,7 +1,6 @@
 package org.vizzoid.zodomorf.entity;
 
 import org.vizzoid.utils.Optional;
-import org.vizzoid.utils.position.DynamicRectangle;
 import org.vizzoid.utils.position.MoveablePoint;
 import org.vizzoid.utils.position.Point;
 import org.vizzoid.zodomorf.Planet;
@@ -20,8 +19,8 @@ public abstract class Animal implements Entity {
     protected final EntityDrop eatDrop;
     protected final Reproduction reproduction;
     protected final EntityType type;
-    protected final DynamicRectangle hitbox;
-    protected int hunger = 10000;
+    protected final Hitbox hitbox;
+    protected int hunger = 20000;
     protected int health = 10;
     protected final AnimalAI ai;
 
@@ -38,7 +37,7 @@ public abstract class Animal implements Entity {
         this.eatDrop = type.getEatDrop();
         this.reproduction = type.getReproduction().clone();
         this.reproduction.setAnimal(this);
-        this.hitbox = new DynamicRectangle(point, type.getWidth(), type.getHeight(), Point.EMPTY);
+        this.hitbox = new Hitbox(point, type.getWidth(), type.getHeight(), Point.EMPTY);
         this.ai = new AnimalAI(this);
 
         planet.addEntity(this);
@@ -76,7 +75,7 @@ public abstract class Animal implements Entity {
         return hitbox.getPos();
     }
 
-    public DynamicRectangle getHitbox() {
+    public Hitbox getHitbox() {
         return hitbox;
     }
 
@@ -89,6 +88,7 @@ public abstract class Animal implements Entity {
             die();
             return;
         }
+        ai.tick(ticks);
         reproduction.tick(ticks);
     }
 
@@ -101,7 +101,7 @@ public abstract class Animal implements Entity {
     }
 
     public boolean shouldFindFood() {
-        return hunger < 2400;
+        return hunger < 4000;
     }
 
     public boolean canEat(Tile tile) {
@@ -112,6 +112,7 @@ public abstract class Animal implements Entity {
         tile.setMaterial(Material.EMPTY);
         eatDrop.give(planet.getAvatar());
         reproduction.onEat();
+        hunger = 20000;
     }
 
     public void die() {

@@ -3,13 +3,12 @@ package org.vizzoid.zodomorf.tile;
 import org.vizzoid.zodomorf.Latice;
 import org.vizzoid.zodomorf.Planet;
 
-public class TreeTile implements TileBehavior {
+public class TreeTile extends StraightFallingTile {
 
-    protected Tile tile;
     private int ticksUntilGrowth = 0;
 
     public TreeTile(Tile tile) {
-        this.tile = tile;
+        super(tile);
         resetGrowth();
     }
 
@@ -33,21 +32,11 @@ public class TreeTile implements TileBehavior {
 
     @Override
     public void tick(long ticks) {
+        super.tick(ticks);
         Planet planet = tile.getPlanet();
         Latice<Tile> latice = planet.getTileLatice();
         int x = tile.getX();
         int y = tile.getY();
-        Tile below = latice.get(x, y - 1);
-        if (!below.isSolid() && !below.getMiddleGround().isSolid()) {
-            below.setMiddleGround(Material.TREE);
-            tile.setMiddleGround(Material.EMPTY);
-
-            tile.setMiddleGroundBehavior(TileBehavior.EMPTY);
-            below.setMiddleGroundBehavior(this);
-
-            setTile(below);
-            return;
-        }
 
         if ((ticksUntilGrowth -= ticks) < 0) {
             resetGrowth();

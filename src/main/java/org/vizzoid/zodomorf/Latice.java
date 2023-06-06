@@ -16,11 +16,11 @@ public class Latice<T> implements Iterable<T>, Serializable {
     @Serial
     private static final long serialVersionUID = 242434794019728695L;
 
-    private final int width;
-    private final int height;
-    private final int size;
-    private Object[] latice;
-    private T defaultValue;
+    protected final int width;
+    protected final int height;
+    protected final int size;
+    protected Object[] latice;
+    protected T defaultValue;
 
     public Latice(int width, int height) {
         this.width = width;

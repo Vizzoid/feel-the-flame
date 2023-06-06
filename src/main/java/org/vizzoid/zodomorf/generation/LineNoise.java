@@ -63,5 +63,17 @@ public class LineNoise {
         return (T[]) t;
     }
 
+    public VariedLineNoise varied(Random r) {
+        return new VariedLineNoise(this, r);
+    }
+
+    public VariedLineNoise varied(LineNoise varied) {
+        return new VariedLineNoise(this, varied);
+    }
+
+    public MixedLineNoise mixed(LineNoise noise) {
+        return new MixedLineNoise(this, noise);
+    }
+
 
 }

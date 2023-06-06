@@ -87,6 +87,7 @@ public interface PlanetGenerator {
 
     default void surface(int[] heights, Planet planet, PlanetTileSet set) {
         Latice<Tile> latice = planet.getTileLatice();
+        latice.fill((x, y) -> new Tile(planet, x, y));
 
         int width = latice.getWidth();
         for (int x = 0; x < width; x++) {
@@ -174,13 +175,21 @@ public interface PlanetGenerator {
                         Optional<Material> plant = plant();
                         if (plant.isPresent()) {
                             double plantNoise = generation(plantSeed, x, y, PLANT_NOISE());
-                            if (plantNoise > 0.8) tile.setMiddleGround(plant.getValue());
+                            if (plantNoise > 0.8) {
+                                Tile spawn = tile.below();
+                                while (!spawn.isSolid()) spawn = spawn.below();
+                                spawn.above().setMiddleGround(plant.getValue());
+                            }
                         }
 
                         Optional<EntityType> animal = animal();
                         if (animal.isPresent()) {
                             double animalNoise = generation(animalSeed, x, y, ANIMAL_NOISE());
-                            if (animalNoise > 0.8) animal.getValue().create(planet, x, y);
+                            if (animalNoise > 0.8) {
+                                Tile spawn = tile.below();
+                                while (!spawn.isSolid()) spawn = spawn.below();
+                                animal.getValue().create(planet, x, spawn.getY());
+                            }
                         }
                     } else {
                         tile.setMaterial(set.caveAir());

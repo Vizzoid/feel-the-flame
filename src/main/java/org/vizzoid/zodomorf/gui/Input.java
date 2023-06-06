@@ -1,4 +1,4 @@
-package org.vizzoid.zodomorf.building;
+package org.vizzoid.zodomorf.gui;
 
 import org.vizzoid.utils.position.Rectangle;
 
@@ -33,9 +33,9 @@ public class Input extends OverlayPart {
     }
 
     @Override
-    public void press() {
+    public void clickPress() {
         string = "";
-        super.press();
+        super.clickPress();
     }
 
     public void press(KeyEvent e) {

@@ -21,7 +21,9 @@ public class Images {
         IMERCURY, ICORAL, ILIMESTONE, IMETEOR, ITREE, IEMPTY,
         ISTEEL, ICLOTH, IGLASS, IPAPER, IPLASTIC, ICOOLER,
         IHEATER, IROCKET, IINSULATOR_SUIT, ICACTUS_BEAR,
-        IFOREST_DEER, IMETAL_SCORPION, IICE_FISH, IROCK_IGUANA;
+        IFOREST_DEER, IMETAL_SCORPION, IICE_FISH, IROCK_IGUANA,
+        ICACTUS, IMEAT, ICOMFORTABLE_ROCKET, ITRIMMER, IWALL,
+        IBUILDING, ICOMPOSITE;
 
     public static final int TILE_SIZE = 30;
 
@@ -47,14 +49,17 @@ public class Images {
         IWATER = ofColor(new Color(0, 0, 255, 255));
         ISULFUR = ofColor(new Color(243, 222, 56));
         IMERCURY = ofColor(new Color(219,206,202));
-        ICORAL = ofColor(new Color(248, 131, 121));
         ILIMESTONE = ofColor(new Color(190, 189, 143));
-        ITREE = ofColor(new Color(133, 94, 66));
         ISTEEL = ofColor(new Color(113, 121, 126));
         ICLOTH = ofColor(new Color(233, 220, 201));
         IGLASS = ofColor(new Color(246, 254, 255));
         IPAPER = ofColor(new Color(242, 238, 203));
         IPLASTIC = ofColor(new Color(192,208,163));
+
+        // plants
+        ICORAL = ofColor(new Color(248, 131, 121));
+        ITREE = ofColor(new Color(133, 94, 66));
+        ICACTUS = ofColor(Color.GREEN);
 
         // buildings
         IFOUNDATION = ofColor(Color.LIGHT_GRAY);
@@ -62,6 +67,11 @@ public class Images {
         IHEATER = ofColor(Color.RED);
         IROCKET = ofColor(Color.ORANGE);
         IINSULATOR_SUIT = ofColor(Color.MAGENTA);
+        ICOMFORTABLE_ROCKET = ofColor(Color.YELLOW);
+        ITRIMMER = ofColor(Color.GRAY);
+        IWALL = IFOUNDATION;
+        IBUILDING = IFOUNDATION;
+        ICOMPOSITE = IFOUNDATION;
 
         // entities
         IPLAYER = ofColor(Color.RED, (int) (Avatar.HITBOX_WIDTH * TILE_SIZE), (int) (Avatar.HITBOX_HEIGHT * TILE_SIZE));
@@ -71,6 +81,7 @@ public class Images {
         IMETAL_SCORPION = ofColor(Color.LIGHT_GRAY);
         IICE_FISH = ofColor(Color.CYAN);
         IROCK_IGUANA = ofColor(Color.DARK_GRAY);
+        IMEAT = ofColor(Color.RED);
     }
 
     private Images() {
@@ -84,6 +95,7 @@ public class Images {
             return (Image) image.get(null);
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
             return Images.IDIRT;
         }
     }
